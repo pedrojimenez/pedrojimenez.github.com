@@ -4,7 +4,7 @@
   <title><![CDATA[Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-10-31T11:11:01+01:00</updated>
+  <updated>2012-10-31T12:25:29+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -12,5 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Primeros Pasos]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2012/10/31/primeros-pasos/"/>
+    <updated>2012-10-31T12:03:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2012/10/31/primeros-pasos</id>
+    <content type="html"><![CDATA[<p>Bueno por fin me he decidido a escribir algo de todo lo que hago y parte de lo que leo. He valorado un montón de opciones previas pero creo que Octopress se adapta perfectamente a mis necesidades. Es por supuesto software libre y como ya hemos visto desplegable dentro de una infraestructura PaaS.</p>
+
+<p>Gracias a @achilued y a @Sfrek por el apoyo y los ánimos. Espero darle la vidilla que se merece ;)</p>
+]]></content>
+  </entry>
   
 </feed>
