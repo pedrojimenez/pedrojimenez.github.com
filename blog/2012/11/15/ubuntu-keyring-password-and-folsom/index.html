@@ -111,7 +111,19 @@ source /home/user/.bashrc
 </pre>
 
 
-<p>La segunda opción es ejecutar los comandos de &#8220;nova&#8221; con la opción <b>&#8211;no_cache</b>, aunque sobre el mismo entorno no he sido capaz de que funcione con dichas indicaciones</p>
+<p>Comprobamos que se ejecutan los comandos de &#8220;nova&#8221;:</p>
+
+<pre>
+root@controller:/etc/nova# nova volume-list
++--------------------------------------+-----------+-----------------+------+-------------+-------------+
+| ID                                   | Status    | Display Name    | Size | Volume Type | Attached to |
++--------------------------------------+-----------+-----------------+------+-------------+-------------+
+| 850e5d38-dc87-4267-b3c9-9d02205f11ab | available | MiPrimerVolumen | 3    | None        |             |
++--------------------------------------+-----------+-----------------+------+-------------+-------------+
+</pre>
+
+
+<p>La segunda opción es ejecutar los comandos de &#8220;nova&#8221; con la opción <u>&#8211;no_cache</u>, aunque sobre el mismo entorno no he sido capaz de que funcione con dichas indicaciones.</p>
 
 <pre>
 root@controller:~# nova --no_cache volume-list
@@ -122,7 +134,7 @@ root@controller:~# nova --no_cache volume-list
 
 <p><u>https://bugs.launchpad.net/python-novaclient/+bug/1020238</u></p>
 
-<p><u>https://lists.launchpad.net/openstack/msg16095.html (solucion de Vish)</u></p>
+<p><u>https://lists.launchpad.net/openstack/msg16095.html (solución de Vish)</u></p>
 </div>
 
 
