@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Pedro Jiménez's Blog</title>
+  <title>Category: folsom - Pedro Jiménez's Blog</title>
   <meta name="author" content="Pedro Jiménez Solís">
 
   
-  <meta name="description" content="Pues después de varios intentos con la infraestructura de Folsom, al final en todas ellas he conseguido llegar a este punto de error. Después de leer &hellip;">
+  <meta name="description" content="Category: folsom">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://pedrojimenez.github.com/">
+  <link rel="canonical" href="http://pedrojimenez.github.comblog/categories/folsom/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -62,123 +62,40 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article role="article">
   
-  
-  
-    <article>
-      
   <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/">Ubuntu Keyring Password and Folsom</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-15T11:16:00+01:00" pubdate data-updated="true">Nov 15<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/#disqus_thread">Comments</a>
-        
-      </p>
+    <h1 class="entry-title">Category: Folsom</h1>
     
   </header>
+  
+  <div id="blog-archives" class="category">
 
 
-  <div class="entry-content"><p>Pues después de varios intentos con la infraestructura de Folsom, al final en todas ellas he conseguido llegar a este punto de error. Después de leer por ahí, la solución es bastante sencilla y se aplica de manea instantánea sobre línea de comandos.</p>
 
-<p>Este error nos salta cuando tratamos de invocar los comandos de &#8220;nova&#8221; después de haber generado y cargado las variables de entorno en el fichero novarc (o el nombre que elijamos).</p>
+  
+  <h2>2012</h2>
 
-<pre>
-root@controller:~# nova list
-Please set a password for your new keyring
-</pre>
+<article>
+  
+<h1><a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/">Ubuntu Keyring password and Folsom</a></h1>
+<time datetime="2012-11-15T11:16:00+01:00" pubdate><span class='month'>Nov</span> <span class='day'>15</span> <span class='year'>2012</span></time>
 
-
-<p>Aunque metamos una contraseña, nos seguirá molestando con este error de manera continuada. Para evitarlo basta con añadir la línea de abajo al bashrc del usuario y volver a cargarlo.</p>
-
-<pre>
-Añadimos al /home/user/.bashrc y recargamos
-export OS_NO_CACHE=1
-source /home/user/.bashrc 
-</pre>
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a></span>
+</footer>
 
 
-<p>La segunda opción es ejecutar los comandos de &#8220;nova&#8221; con la opción <b>&#8211;no_cache</b>, aunque sobre el mismo entorno no he sido capaz de que funcione con dichas indicaciones</p>
+</article>
 
-<pre>
-root@controller:~# nova --no_cache volume-list
-</pre>
-
-
-<p>Enlaces:</p>
-
-<p><u>https://bugs.launchpad.net/python-novaclient/+bug/1020238</u></p>
-
-<p><u>https://lists.launchpad.net/openstack/msg16095.html (solucion de Vish)</u></p>
 </div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/31/primeros-pasos/">Primeros Pasos</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
 
   
+</article>
 
-
-<time datetime="2012-10-31T12:03:00+01:00" pubdate data-updated="true">Oct 31<span>st</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/31/primeros-pasos/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Bueno por fin me he decidido a escribir algo de todo lo que hago y parte de lo que leo. He valorado un montón de opciones previas pero creo que Octopress se adapta perfectamente a mis necesidades. Es por supuesto software libre y como ya hemos visto desplegable dentro de una infraestructura PaaS.</p>
-
-<p>Gracias a @achilued y a @Sfrek por el apoyo y los ánimos. Espero darle la vidilla que se merece ;)</p>
 </div>
-  
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -199,7 +116,7 @@ root@controller:~# nova --no_cache volume-list
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/pedrojimenez">@pedrojimenez</a> on GitHub
@@ -229,7 +146,7 @@ root@controller:~# nova --no_cache volume-list
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -248,6 +165,7 @@ root@controller:~# nova --no_cache volume-list
 
   
 </aside>
+
 
     </div>
   </div>
