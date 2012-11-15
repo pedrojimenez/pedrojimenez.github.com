@@ -4,7 +4,7 @@
   <title><![CDATA[Category: openstack | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/openstack/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-11-15T11:36:26+01:00</updated>
+  <updated>2012-11-15T15:26:05+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -12,6 +12,101 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Keystone user-role-list bug]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2012/11/15/keystone-user-role-list-bug/"/>
+    <updated>2012-11-15T15:02:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2012/11/15/keystone-user-role-list-bug</id>
+    <content type="html"><![CDATA[<p>Depurando el comportamiento de Keystone para solventar un error que me trae de cabeza en Glance, he visto que un nuevos comandos que se han añadido al servicio de Identidad en OpenStack ("keystone user-role-list"). Este comando nos permitirá extraer un listado de los usuarios/roles/tenants de un solo vistazo.</p>
+
+<p>Problema: que ahora mismo no funciona como se espera. Tan solo muestra el listado de los roles que hay para el usurio que tenemos en las variables de entorno (cargadas en el fichero novarc o como queramos llamarlo). Necesitaba conocer dicho listado del usuario "glance" no del usuario "admin". En una primera pasada vemos que el listado solamente nos permite obtener los del mismo usuario "admin":</p>
+
+<pre>
+keystone role-list
++----------------------------------+----------------------+
+|                id                |         name         |
++----------------------------------+----------------------+
+| 06bc817f9b8647d3bb795c6a1107cff3 |    KeystoneAdmin     |
+| 1e77a4036d42446aabcfc706759b732d | KeystoneServiceAdmin |
+| 25fcba9f9b9a4982a77f70fd2c84fc31 |        admin         |
+| 28941e6016ea488cad9e5e55fee7d8aa |        Member        |
++----------------------------------+----------------------+
+
+keystone tenant-list
++----------------------------------+---------+---------+
+|                id                |   name  | enabled |
++----------------------------------+---------+---------+
+| 15eafea37ce24b42ab60b1fe0f882d98 | service |   true  |
+| 18e181671f174cc1bce64e4370eea96a |  admin  |   true  |
++----------------------------------+---------+---------+
+
+keystone user-list
++----------------------------------+------------+---------+-------+
+|                id                |    name    | enabled | email |
++----------------------------------+------------+---------+-------+
+| 4be33d2e90ad42ce867954b07aa7b908 |   admin    |   true  |       |
+| 8c53cdc1f4354e77a8e2abd39728b20d |    nova    |   true  |       |
+| bd9e78ff6ca84c7181f3f412a01597ed | monitoring |   true  |       |
+| f6b72f21414246d0a924fc883e694f45 |   glance   |   true  |       |
++----------------------------------+------------+---------+-------+
+
+keystone user-role-list
++----------------------------------+----------------------+----------------------------------+----------------------------------+
+|                id                |         name         |             user_id              |            tenant_id             |
++----------------------------------+----------------------+----------------------------------+----------------------------------+
+| 06bc817f9b8647d3bb795c6a1107cff3 |    KeystoneAdmin     | 4be33d2e90ad42ce867954b07aa7b908 | 18e181671f174cc1bce64e4370eea96a |
+| 1e77a4036d42446aabcfc706759b732d | KeystoneServiceAdmin | 4be33d2e90ad42ce867954b07aa7b908 | 18e181671f174cc1bce64e4370eea96a |
+| 25fcba9f9b9a4982a77f70fd2c84fc31 |        admin         | 4be33d2e90ad42ce867954b07aa7b908 | 18e181671f174cc1bce64e4370eea96a |
++----------------------------------+----------------------+----------------------------------+----------------------------------+
+</pre>
+
+
+<p>Para este listado el usuario sigue siendo el mismo: 4be33d2e90ad42ce867954b07aa7b908 y por un ratillo incluso pensé que el resto de usuarios no se habrían creado, pero no era realmente así. Un pequeño vistazo a la DB me lo dejó bien claro. Buscando algo de información sobre el comando (maravilla de doc oficial) y al hacer el "help" del comando me encontré que se puede especificar el usuario y el tenant.</p>
+
+<p>Pues manos a la obra, ahora es viable sacar el resto de la información para completar lo que en un futuro será la salida estandar del comando. Tampoco estaría mal poder especificar uno de los dos parámetros, o bien el usuario o bien el tenant, pero os adelanto que no es así. Hay que especificar ambos.</p>
+
+<pre>
+keystone help user-role-list
+usage: keystone user-role-list [--user-id <user-id>] [--tenant-id <tenant-id>]
+
+List roles granted to a user
+
+Optional arguments:
+  --user-id <user-id>   List roles granted to a user
+  --tenant-id <tenant-id>
+                        List roles granted on a tenant
+
+- - - - - - - - - - -
+user Glance:
+root@controller:/etc/glance# keystone user-role-list --user-id f6b72f21414246d0a924fc883e694f45 --tenant-id 15eafea37ce24b42ab60b1fe0f882d98
++----------------------------------+-------+----------------------------------+----------------------------------+
+|                id                |  name |             user_id              |            tenant_id             |
++----------------------------------+-------+----------------------------------+----------------------------------+
+| 25fcba9f9b9a4982a77f70fd2c84fc31 | admin | f6b72f21414246d0a924fc883e694f45 | 15eafea37ce24b42ab60b1fe0f882d98 |
++----------------------------------+-------+----------------------------------+----------------------------------+
+
+user Nova:
+root@controller:/etc/glance# keystone user-role-list  --user-id 8c53cdc1f4354e77a8e2abd39728b20d --tenant-id 15eafea37ce24b42ab60b1fe0f882d98
++----------------------------------+-------+----------------------------------+----------------------------------+
+|                id                |  name |             user_id              |            tenant_id             |
++----------------------------------+-------+----------------------------------+----------------------------------+
+| 25fcba9f9b9a4982a77f70fd2c84fc31 | admin | 8c53cdc1f4354e77a8e2abd39728b20d | 15eafea37ce24b42ab60b1fe0f882d98 |
++----------------------------------+-------+----------------------------------+----------------------------------+
+
+
+Rol Admin: | 25fcba9f9b9a4982a77f70fd2c84fc31 |
+</pre>
+
+
+<p>Espero que os sirva para un apuro o para el debug de vuestra plataforma.</p>
+
+<p>Enlaces:
+<u>http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-users-tenants-and-roles-with-python-keystoneclient.html</u>
+<u>https://bugs.launchpad.net/python-keystoneclient/+bug/1058750</u>
+<u>http://www.gossamer-threads.com/lists/openstack/dev/19510</u></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ubuntu Keyring password and Folsom]]></title>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Pedro Jiménez's Blog]]></title>
-  <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: keystone | Pedro Jiménez's Blog]]></title>
+  <link href="http://pedrojimenez.github.com/blog/categories/keystone/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
   <updated>2012-11-15T15:26:05+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
@@ -18,9 +18,9 @@
     <link href="http://pedrojimenez.github.com/blog/2012/11/15/keystone-user-role-list-bug/"/>
     <updated>2012-11-15T15:02:00+01:00</updated>
     <id>http://pedrojimenez.github.com/blog/2012/11/15/keystone-user-role-list-bug</id>
-    <content type="html"><![CDATA[<p>Depurando el comportamiento de Keystone para solventar un error que me trae de cabeza en Glance, he visto que un nuevos comandos que se han añadido al servicio de Identidad en OpenStack (&#8220;keystone user-role-list&#8221;). Este comando nos permitirá extraer un listado de los usuarios/roles/tenants de un solo vistazo.</p>
+    <content type="html"><![CDATA[<p>Depurando el comportamiento de Keystone para solventar un error que me trae de cabeza en Glance, he visto que un nuevos comandos que se han añadido al servicio de Identidad en OpenStack ("keystone user-role-list"). Este comando nos permitirá extraer un listado de los usuarios/roles/tenants de un solo vistazo.</p>
 
-<p>Problema: que ahora mismo no funciona como se espera. Tan solo muestra el listado de los roles que hay para el usurio que tenemos en las variables de entorno (cargadas en el fichero novarc o como queramos llamarlo). Necesitaba conocer dicho listado del usuario &#8220;glance&#8221; no del usuario &#8220;admin&#8221;. En una primera pasada vemos que el listado solamente nos permite obtener los del mismo usuario &#8220;admin&#8221;:</p>
+<p>Problema: que ahora mismo no funciona como se espera. Tan solo muestra el listado de los roles que hay para el usurio que tenemos en las variables de entorno (cargadas en el fichero novarc o como queramos llamarlo). Necesitaba conocer dicho listado del usuario "glance" no del usuario "admin". En una primera pasada vemos que el listado solamente nos permite obtener los del mismo usuario "admin":</p>
 
 <pre>
 keystone role-list
@@ -62,7 +62,7 @@ keystone user-role-list
 </pre>
 
 
-<p>Para este listado el usuario sigue siendo el mismo: 4be33d2e90ad42ce867954b07aa7b908 y por un ratillo incluso pensé que el resto de usuarios no se habrían creado, pero no era realmente así. Un pequeño vistazo a la DB me lo dejó bien claro. Buscando algo de información sobre el comando (maravilla de doc oficial) y al hacer el &#8220;help&#8221; del comando me encontré que se puede especificar el usuario y el tenant.</p>
+<p>Para este listado el usuario sigue siendo el mismo: 4be33d2e90ad42ce867954b07aa7b908 y por un ratillo incluso pensé que el resto de usuarios no se habrían creado, pero no era realmente así. Un pequeño vistazo a la DB me lo dejó bien claro. Buscando algo de información sobre el comando (maravilla de doc oficial) y al hacer el "help" del comando me encontré que se puede especificar el usuario y el tenant.</p>
 
 <p>Pues manos a la obra, ahora es viable sacar el resto de la información para completar lo que en un futuro será la salida estandar del comando. Tampoco estaría mal poder especificar uno de los dos parámetros, o bien el usuario o bien el tenant, pero os adelanto que no es así. Hay que especificar ambos.</p>
 
@@ -105,68 +105,6 @@ Rol Admin: | 25fcba9f9b9a4982a77f70fd2c84fc31 |
 <u>http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-users-tenants-and-roles-with-python-keystoneclient.html</u>
 <u>https://bugs.launchpad.net/python-keystoneclient/+bug/1058750</u>
 <u>http://www.gossamer-threads.com/lists/openstack/dev/19510</u></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Ubuntu Keyring password and Folsom]]></title>
-    <link href="http://pedrojimenez.github.com/blog/2012/11/15/ubuntu-keyring-password-and-folsom/"/>
-    <updated>2012-11-15T11:16:00+01:00</updated>
-    <id>http://pedrojimenez.github.com/blog/2012/11/15/ubuntu-keyring-password-and-folsom</id>
-    <content type="html"><![CDATA[<p>Pues después de varios intentos con la infraestructura de Folsom, al final en todas ellas he conseguido llegar a este punto de error. Después de leer por ahí, la solución es bastante sencilla y se aplica de manea instantánea sobre línea de comandos.</p>
-
-<p>Este error nos salta cuando tratamos de invocar los comandos de &#8220;nova&#8221; después de haber generado y cargado las variables de entorno en el fichero novarc (o el nombre que elijamos).</p>
-
-<pre>
-root@controller:~# nova list
-Please set a password for your new keyring
-</pre>
-
-
-<p>Aunque metamos una contraseña, nos seguirá molestando con este error de manera continuada. Para evitarlo basta con añadir la línea de abajo al bashrc del usuario y volver a cargarlo.</p>
-
-<pre>
-Añadimos al /home/user/.bashrc y recargamos
-export OS_NO_CACHE=1
-source /home/user/.bashrc 
-</pre>
-
-
-<p>Comprobamos que se ejecutan los comandos de &#8220;nova&#8221;:</p>
-
-<pre>
-root@controller:/etc/nova# nova volume-list
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-| ID                                   | Status    | Display Name    | Size | Volume Type | Attached to |
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-| 850e5d38-dc87-4267-b3c9-9d02205f11ab | available | MiPrimerVolumen | 3    | None        |             |
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-</pre>
-
-
-<p>La segunda opción es ejecutar los comandos de &#8220;nova&#8221; con la opción <u>&#8211;no_cache</u>, aunque sobre el mismo entorno no he sido capaz de que funcione con dichas indicaciones.</p>
-
-<pre>
-root@controller:~# nova --no_cache volume-list
-</pre>
-
-
-<p>Enlaces:</p>
-
-<p><u>https://bugs.launchpad.net/python-novaclient/+bug/1020238</u></p>
-
-<p><u>https://lists.launchpad.net/openstack/msg16095.html (solución de Vish)</u></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Primeros Pasos]]></title>
-    <link href="http://pedrojimenez.github.com/blog/2012/10/31/primeros-pasos/"/>
-    <updated>2012-10-31T12:03:00+01:00</updated>
-    <id>http://pedrojimenez.github.com/blog/2012/10/31/primeros-pasos</id>
-    <content type="html"><![CDATA[<p>Bueno por fin me he decidido a escribir algo de todo lo que hago y parte de lo que leo. He valorado un montón de opciones previas pero creo que Octopress se adapta perfectamente a mis necesidades. Es por supuesto software libre y como ya hemos visto desplegable dentro de una infraestructura PaaS.</p>
-
-<p>Gracias a @achilued y a @Sfrek por el apoyo y los ánimos. Espero darle la vidilla que se merece ;)</p>
 ]]></content>
   </entry>
   
