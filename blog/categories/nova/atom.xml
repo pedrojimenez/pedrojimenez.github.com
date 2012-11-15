@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: nova | Pedro Jiménez's Blog]]></title>
+  <link href="http://pedrojimenez.github.com/blog/categories/nova/atom.xml" rel="self"/>
+  <link href="http://pedrojimenez.github.com/"/>
+  <updated>2012-11-15T15:45:01+01:00</updated>
+  <id>http://pedrojimenez.github.com/</id>
+  <author>
+    <name><![CDATA[Pedro Jiménez Solís]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Ubuntu Keyring password and Folsom]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2012/11/15/ubuntu-keyring-password-and-folsom/"/>
+    <updated>2012-11-15T11:16:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2012/11/15/ubuntu-keyring-password-and-folsom</id>
+    <content type="html"><![CDATA[<p>Pues después de varios intentos con la infraestructura de Folsom, al final en todas ellas he conseguido llegar a este punto de error. Después de leer por ahí, la solución es bastante sencilla y se aplica de manea instantánea sobre línea de comandos.</p>
+
+<p>Este error nos salta cuando tratamos de invocar los comandos de "nova" después de haber generado y cargado las variables de entorno en el fichero novarc (o el nombre que elijamos).</p>
+
+<pre>
+root@controller:~# nova list
+Please set a password for your new keyring
+</pre>
+
+
+<p>Aunque metamos una contraseña, nos seguirá molestando con este error de manera continuada. Para evitarlo basta con añadir la línea de abajo al bashrc del usuario y volver a cargarlo.</p>
+
+<pre>
+Añadimos al /home/user/.bashrc y recargamos
+export OS_NO_CACHE=1
+source /home/user/.bashrc 
+</pre>
+
+
+<p>Comprobamos que se ejecutan los comandos de "nova":</p>
+
+<pre>
+root@controller:/etc/nova# nova volume-list
++--------------------------------------+-----------+-----------------+------+-------------+-------------+
+| ID                                   | Status    | Display Name    | Size | Volume Type | Attached to |
++--------------------------------------+-----------+-----------------+------+-------------+-------------+
+| 850e5d38-dc87-4267-b3c9-9d02205f11ab | available | MiPrimerVolumen | 3    | None        |             |
++--------------------------------------+-----------+-----------------+------+-------------+-------------+
+</pre>
+
+
+<p>La segunda opción es ejecutar los comandos de "nova" con la opción <u>--no_cache</u>, aunque sobre el mismo entorno no he sido capaz de que funcione con dichas indicaciones.</p>
+
+<pre>
+root@controller:~# nova --no_cache volume-list
+</pre>
+
+
+<p>Enlaces:</p>
+
+<p><u>https://bugs.launchpad.net/python-novaclient/+bug/1020238</u></p>
+
+<p><u>https://lists.launchpad.net/openstack/msg16095.html (solución de Vish)</u></p>
+]]></content>
+  </entry>
+  
+</feed>
