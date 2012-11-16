@@ -120,7 +120,15 @@ Archivo "osops-utils/libraries/database.rb"
 
 <p>Se ha hecho un <em>Pull Request</em> a la gente de <em>Rcbops</em> con esta modificación.<a href="https://github.com/rcbops-cookbooks/osops-utils/pull/46#issuecomment-10194833">Enlace</a>.</p>
 
-<p>Ahora mismo lo estoy usando en nuestro Chef Server en el despligue de Folsom y funciona &#8220;like a charm&#8221;.</p>
+<p>Ahora mismo lo estoy usando en nuestro Chef Server en el despligue de Folsom y funciona &#8220;like a charm&#8221;. Nos genera dos sentencias de permisos para cada servicio (keystone/glance/nova/horizon).</p>
+
+<pre>
+INFO: Processing mysql_database_user[keystone] action grant (keystone::server line 24)
+INFO: mysql_database_user[keystone]: granting access with statement [GRANT all ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'onetimepassword']
+INFO: Processing mysql_database_user[keystone] action grant (keystone::server line 32)
+INFO: mysql_database_user[keystone]: granting access with statement [GRANT all ON keystone.* TO 'keystone'@'172.16.172.4' IDENTIFIED BY 'onetimepassword']
+</pre>
+
 </div>
   
   
