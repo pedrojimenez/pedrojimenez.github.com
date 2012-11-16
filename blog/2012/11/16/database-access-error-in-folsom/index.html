@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: keystone - Pedro Jiménez's Blog</title>
+  <title>Database Access Error in Folsom - Pedro Jiménez's Blog</title>
   <meta name="author" content="Pedro Jiménez Solís">
 
   
-  <meta name="description" content="Category: keystone">
+  <meta name="description" content="Después de darle muchas vueltas al asunto, el comodín que se utilizaba en Mysql 5.1 (versión usada Diablo and Essex) el conocido &#8220;%&#8221; ha &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://pedrojimenez.github.comblog/categories/keystone/">
+  <link rel="canonical" href="http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -63,36 +63,118 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Keystone</h1>
+    
+      <h1 class="entry-title">Database Access Error in Folsom</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-16T11:32:00+01:00" pubdate data-updated="true">Nov 16<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>Después de darle muchas vueltas al asunto, el comodín que se utilizaba en Mysql 5.1 (versión usada Diablo and Essex) el conocido &#8220;%&#8221; ha comenzado a fallar. Nos encontramos con errores de acceso a las Bases de Datos que eran nuevos para mi hasta el momento. Revisando las bitácoras de instalaciones previas hemos visto que los permisos de acceso a las diferentes DataBases de Mysql han cambiado y se utiliza como única línea de permisos la siguiente:</p>
 
-  
-  <h2>2012</h2>
-
-<article>
-  
-<h1><a href="/blog/2012/11/15/keystone-user-role-list-bug/">Keystone user-role-list bug</a></h1>
-<time datetime="2012-11-15T15:02:00+01:00" pubdate><span class='month'>Nov</span> <span class='day'>15</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/keystone/'>keystone</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a></span>
-</footer>
+<pre>
+mysql_database_user[keystone]: granting access with statement [GRANT all ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'onetimepassword']
+</pre>
 
 
-</article>
+<p>Pero solamente con esta sentencia constatamos que el acceso desde otros nodos (multihost) nos daba error. Para solucionar estos problemas se ha probado a añadir sentencias extras de &#8220;GRANT&#8221; hasta que permitió dichas conexiones. Haciendo un resumen de todas ellas se ha modificado el cookbook de osops-utils para que añada una nueva sentencia de GRANT contra la dirección en la que se bindea el servicio de Mysql. De esta manera se podrá configurar el servicio de Base de Datos en HA y tener los accesos contra la &#8220;bind_address&#8221;.</p>
 
+<pre>
+Archivo "osops-utils/libraries/database.rb"
+
+        mysql_database_user username do
+          connection connection_info
+          password pw
+          database_name db_name
+          host "#{mysql_info["bind_address"]}"
+          privileges [:all]
+          action :grant
+        end
+</pre>
+
+
+<p>Se ha hecho un Pull Request a la gente de Rcbops con esta modificación.<a href="https://github.com/rcbops-cookbooks/osops-utils/pull/46#issuecomment-10194833">Enlace</a>.</p>
+
+<p>Ahora mismo lo estoy usando en nuestro Chef Server en el despligue de Folsom y funciona &#8220;like a charm&#8221;.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Pedro Jiménez Solís</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-16T11:32:00+01:00" pubdate data-updated="true">Nov 16<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/cookbooks/'>cookbooks</a>, <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/" data-via="pjimenezsolis" data-counturl="http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/11/15/keystone-user-role-list-bug/" title="Previous Post: Keystone user-role-list bug">&laquo; Keystone user-role-list bug</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -189,7 +271,10 @@
       var disqus_shortname = 'myblog-pedrojimenez';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/';
+        var disqus_url = 'http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

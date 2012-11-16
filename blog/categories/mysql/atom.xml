@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mysql | Pedro Jiménez's Blog]]></title>
+  <link href="http://pedrojimenez.github.com/blog/categories/mysql/atom.xml" rel="self"/>
+  <link href="http://pedrojimenez.github.com/"/>
+  <updated>2012-11-16T13:12:44+01:00</updated>
+  <id>http://pedrojimenez.github.com/</id>
+  <author>
+    <name><![CDATA[Pedro Jiménez Solís]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Database Access Error in Folsom]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/"/>
+    <updated>2012-11-16T11:32:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom</id>
+    <content type="html"><![CDATA[<p>Después de darle muchas vueltas al asunto, el comodín que se utilizaba en Mysql 5.1 (versión usada Diablo and Essex) el conocido "%" ha comenzado a fallar. Nos encontramos con errores de acceso a las Bases de Datos que eran nuevos para mi hasta el momento. Revisando las bitácoras de instalaciones previas hemos visto que los permisos de acceso a las diferentes DataBases de Mysql han cambiado y se utiliza como única línea de permisos la siguiente:</p>
+
+<pre>
+mysql_database_user[keystone]: granting access with statement [GRANT all ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'onetimepassword']
+</pre>
+
+
+<p>Pero solamente con esta sentencia constatamos que el acceso desde otros nodos (multihost) nos daba error. Para solucionar estos problemas se ha probado a añadir sentencias extras de "GRANT" hasta que permitió dichas conexiones. Haciendo un resumen de todas ellas se ha modificado el cookbook de osops-utils para que añada una nueva sentencia de GRANT contra la dirección en la que se bindea el servicio de Mysql. De esta manera se podrá configurar el servicio de Base de Datos en HA y tener los accesos contra la "bind_address".</p>
+
+<pre>
+Archivo "osops-utils/libraries/database.rb"
+
+        mysql_database_user username do
+          connection connection_info
+          password pw
+          database_name db_name
+          host "#{mysql_info["bind_address"]}"
+          privileges [:all]
+          action :grant
+        end
+</pre>
+
+
+<p>Se ha hecho un Pull Request a la gente de Rcbops con esta modificación.<a href="https://github.com/rcbops-cookbooks/osops-utils/pull/46#issuecomment-10194833">Enlace</a>.</p>
+
+<p>Ahora mismo lo estoy usando en nuestro Chef Server en el despligue de Folsom y funciona "like a charm".</p>
+]]></content>
+  </entry>
+  
+</feed>
