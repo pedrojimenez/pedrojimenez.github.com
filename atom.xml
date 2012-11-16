@@ -4,7 +4,7 @@
   <title><![CDATA[Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-11-16T13:12:44+01:00</updated>
+  <updated>2012-11-16T13:15:31+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -41,7 +41,7 @@ Archivo "osops-utils/libraries/database.rb"
 </pre>
 
 
-<p>Se ha hecho un Pull Request a la gente de Rcbops con esta modificación.<a href="https://github.com/rcbops-cookbooks/osops-utils/pull/46#issuecomment-10194833">Enlace</a>.</p>
+<p>Se ha hecho un <em>Pull Request</em> a la gente de <em>Rcbops</em> con esta modificación.<a href="https://github.com/rcbops-cookbooks/osops-utils/pull/46#issuecomment-10194833">Enlace</a>.</p>
 
 <p>Ahora mismo lo estoy usando en nuestro Chef Server en el despligue de Folsom y funciona &#8220;like a charm&#8221;.</p>
 ]]></content>
