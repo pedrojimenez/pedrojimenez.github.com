@@ -190,7 +190,7 @@ LOG:
 
 <pre><code> &lt;pre&gt;
  ARCHIvO: cinder/templates/default/targets.conf.erb
-</code></pre></blockquote>
+</code></pre>
 
 <p>Cambiamos:
 &lt;% if %w{redhat centos fedora}.include?(node[&#8220;platform&#8221;]) %>
@@ -210,7 +210,7 @@ include /etc/tgt/conf.d/cinder_tgt.conf
 include /etc/tgt/conf.d/nova_tgt.conf
 &lt;% end %>
 default-driver iscsi
-</pre></p>
+</pre></p></blockquote>
 
 <p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: <a href="https://bugs.launchpad.net/cinder/+bug/1057904">https://bugs.launchpad.net/cinder/+bug/1057904</a></p>
 </div>

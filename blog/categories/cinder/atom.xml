@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cinder | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/cinder/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-05T18:29:44+01:00</updated>
+  <updated>2012-12-05T18:31:39+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -116,7 +116,7 @@ LOG:
 
 <pre><code> &lt;pre&gt;
  ARCHIvO: cinder/templates/default/targets.conf.erb
-</code></pre></blockquote>
+</code></pre>
 
 <p>Cambiamos:
 &lt;% if %w{redhat centos fedora}.include?(node["platform"]) %>
@@ -136,7 +136,7 @@ include /etc/tgt/conf.d/cinder_tgt.conf
 include /etc/tgt/conf.d/nova_tgt.conf
 &lt;% end %>
 default-driver iscsi
-</pre></p>
+</pre></p></blockquote>
 
 <p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: <a href="https://bugs.launchpad.net/cinder/+bug/1057904">https://bugs.launchpad.net/cinder/+bug/1057904</a></p>
 ]]></content>
