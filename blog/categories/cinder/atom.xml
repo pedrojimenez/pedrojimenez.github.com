@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cinder | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/cinder/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-05T19:08:24+01:00</updated>
+  <updated>2012-12-05T19:09:09+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -18,10 +18,10 @@
     <link href="http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom/"/>
     <updated>2012-12-05T17:45:00+01:00</updated>
     <id>http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom</id>
-    <content type="html"><![CDATA[<p><img src="http://wiki.openstack.org/Icons?action=AttachFile&amp;do=get&amp;target=openstack-object-storage-icon.png" alt="Cinder" /></p>
-
-<center> 
-    <img src="http://wiki.openstack.org/Icons?action=AttachFile&do=get&target=openstack-object-storage-icon.png" alt="Cinder" align="center">
+    <content type="html"><![CDATA[<center> 
+    <img src="http://wiki.openstack.org/Icons?action=AttachFile&do=get&target=openstack-object-storage-icon.png" alt="Cinder">
+    <img src="http://wiki.openstack.org/Icons?action=AttachFile&do=get&target=openstack-object-storage-icon.png" alt="Cinder">
+    <img src="http://wiki.openstack.org/Icons?action=AttachFile&do=get&target=openstack-object-storage-icon.png" alt="Cinder">
 </center>
 
 
