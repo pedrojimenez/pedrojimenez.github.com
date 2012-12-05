@@ -125,7 +125,7 @@
 <!-- more -->
 
 
-<p>Buscando algo de información nos hemos topado con un pequeño <em>BUG</em>, muy sencillo ya que es un error de interpretación de la sintaxis de un archivo de configuración (<em>/etc/tgt/targets.conf</em>). En él se indica con un comodín que añadan todas las opciones de configuración en archivos del directorio <em>/etc/tgt/conf.d/</em> &#8230; aunque parece que esta sintaxis no funciona:</p>
+<p>Buscando algo de información nos hemos topado con un pequeño <em>BUG</em>, muy sencillo, ya que es un error de interpretación de la sintaxis de un archivo de configuración (<em>/etc/tgt/targets.conf</em>). En él se indica con un comodín que añadan todas las opciones de configuración en archivos del directorio <em>/etc/tgt/conf.d/</em> &#8230; aunque parece que esta sintaxis no funciona:</p>
 
 <pre>
 ARCHIVO: /etc/tgt/targets.conf
@@ -184,9 +184,9 @@ LOG:
 </pre>
 
 
-<p>NOTA: Debe usarse un archivo &#8220;openrc&#8221;/&#8221;novarc&#8221; para cargar las variables de entorno y no tener que especificarslas a Cinder.</p>
+<blockquote><p>NOTA: Debe usarse un archivo &#8220;openrc&#8221;/&#8221;novarc&#8221; para cargar las variables de entorno y no tener que especificarslas a Cinder.</p>
 
-<p>PROBLEMA: en cada iteración de &#8220;Chef client&#8221; el archivo se regerará al valor erróneo.Cambiamos la platilla para que adapte a las especificaciones arriba mencionadas.</p>
+<p>PROBLEMA: en cada iteración de &#8220;Chef client&#8221; el archivo se regerará al valor erróneo. Cambiamos la plantilla para que adapte a las especificaciones arriba mencionadas.</p></blockquote>
 
 <pre>
 ARCHIvO: cinder/templates/default/targets.conf.erb
@@ -212,7 +212,7 @@ default-driver iscsi
 </pre>
 
 
-<p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: https://bugs.launchpad.net/cinder/+bug/1057904</p>
+<p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: (https://bugs.launchpad.net/cinder/+bug/1057904)</p>
 </div>
 
 
