@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Cinder: Volume Creation Error in Folsom - Pedro Jiménez's Blog</title>
+  <meta name="author" content="Pedro Jiménez Solís">
+
+  
+  <meta name="description" content="Estamos inmersos en la automatización de las instalaciones de Openstack con Chef. Utilizamos actualmente una infraestructura muy sencilla con un &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Pedro Jiménez's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Pedro Jiménez's Blog</a></h1>
+  
+    <h2>Un blog de muchas inquietudes</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:pedrojimenez.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Cinder: Volume Creation Error in Folsom</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-05T17:45:00+01:00" pubdate data-updated="true">Dec 5<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="http://wiki.openstack.org/Icons?action=AttachFile&amp;do=get&amp;target=openstack-object-storage-icon.png" alt="Cinder" /></p>
+
+<p>Estamos inmersos en la automatización de las instalaciones de Openstack con Chef. Utilizamos actualmente una infraestructura muy sencilla con un Chef-Server local que vamos utilizando para diferentes clientes/laboratorios.</p>
+
+<p>Una de las varias modificaciones que hemos tenido que realizar ha sido con el cookbook de Cinder. Nos hemos encontrado que después de tocar atributos en el &#8220;Rol&#8221; y el &#8220;Entorno&#8221; nos seguía dando error al crear el volumen desde consola. Más específicamente un error de iSCSI:</p>
+
+<pre>
+2012-12-05 17:01:19 4046 ERROR cinder.openstack.common.rpc.amqp [-] Exception during message handling
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp Traceback (most recent call last):
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/openstack/common/rpc/amqp.py", line 276, in _process_data
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     rval = self.proxy.dispatch(ctxt, version, method, **args)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/openstack/common/rpc/dispatcher.py", line 145, in dispatch
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     return getattr(proxyobj, method)(ctxt, **kwargs)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/volume/manager.py", line 163, in create_volume
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     volume_ref['id'], {'status': 'error'})
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/contextlib.py", line 24, in __exit__
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     self.gen.next()
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/volume/manager.py", line 156, in create_volume
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     model_update = self.driver.create_export(context, volume_ref)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/volume/driver.py", line 437, in create_export
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     volume_path)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/volume/iscsi.py", line 145, in create_iscsi_target
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     raise exception.ISCSITargetCreateFailed(volume_id=vol_id)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp ISCSITargetCreateFailed: Failed to create iscsi target for volume volume-4e680c7b-b8f4-43b8-a766-1996a2537474.
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp 
+</pre>
+
+
+<p>Buscando algo de información nos hemos topado con un pequeño <em>BUG</em>, muy sencillo ya que es un error de interpretación de la sintaxis de un archivo de configuración (<em>/etc/tgt/targets.conf</em>). En él se indica con un comodín que añadan todas las opciones de configuración en archivos del directorio <em>/etc/tgt/conf.d/</em> &#8230; aunque parece que esta sintaxis no funciona:</p>
+
+<pre>
+ARCHIVO: /etc/tgt/targets.conf
+
+Cambiamos esto:
+include /etc/tgt/conf.d/*.conf
+default-driver iscsi
+
+
+Por los archivos que queramos incluir:
+include /etc/tgt/conf.d/cinder_tgt.conf
+include /etc/tgt/conf.d/nova_tgt.conf
+default-driver iscsi
+</pre>
+
+
+<p>Realizamos un reinicio del servicio y volvemos a crear un volumen (Volume-Test03)</p>
+
+<pre>
+root@controller:~# cinder create --display-name LV_test03 --display-description "Testing Volume 03" 2
++---------------------+--------------------------------------+
+|       Property      |                Value                 |
++---------------------+--------------------------------------+
+|     attachments     |                  []                  |
+|  availability_zone  |                 nova                 |
+|      created_at     |      2012-12-05T16:33:35.452347      |
+| display_description |          Testing Volume 03           |
+|     display_name    |              LV_test03               |
+|          id         | 6553512d-c25a-40a2-9a50-bb12d35b23bf |
+|       metadata      |                  {}                  |
+|         size        |                  2                   |
+|     snapshot_id     |                 None                 |
+|        status       |               creating               |
+|     volume_type     |                 None                 |
++---------------------+--------------------------------------+
+</pre>
+
+
+<p>Comprobamos que ahora el volumen se ha creado de manera correcta</p>
+
+<pre>
+root@controller:~# cinder list
++--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+|                  ID                  |   Status  | Display Name | Size | Volume Type | Bootable | Attached to |
++--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+| 6553512d-c25a-40a2-9a50-bb12d35b23bf | available |  LV_test03   |  2   |     None    |          |             |
+| df6949a3-beab-481c-ad43-3e6961dd1266 |   error   |  LV_test02   |  2   |     None    |          |             |
++--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+
+LOG:
+==> /var/log/cinder/cinder-api.log <==
+2012-12-05 17:33:35 INFO cinder.api.openstack.wsgi [req-b65efc22-c141-4d7d-8b55-67d5e01ca6ca 0b4cf20489b74be5955824ea9df14d4d 13b18da27978481f893cbdd938d8d78f] POST http://172.16.172.4:8776/v1/13b18da27978481f893cbdd938d8d78f/volumes
+2012-12-05 17:33:35 AUDIT cinder.api.openstack.volume.volumes [req-b65efc22-c141-4d7d-8b55-67d5e01ca6ca 0b4cf20489b74be5955824ea9df14d4d 13b18da27978481f893cbdd938d8d78f] Create volume of 2 GB
+2012-12-05 17:33:35 DEBUG cinder.quota [req-b65efc22-c141-4d7d-8b55-67d5e01ca6ca 0b4cf20489b74be5955824ea9df14d4d 13b18da27978481f893cbdd938d8d78f] Created reservations ['3c601bff-5b57-440c-88fd-f81c54d47570', '060b181f-1ee5-4d0d-99da-985d5c094d34'] reserve /usr/lib/python2.7/dist-packages/cinder/quota.py:663
+2012-12-05 17:33:35 4604 DEBUG cinder.openstack.common.rpc.amqp [-] Making asynchronous cast on cinder-scheduler... cast /usr/lib/python2.7/dist-packages/cinder/openstack/common/rpc/amqp.py:377
+</pre>
+
+
+<p>NOTA: Debe usarse un archivo &#8220;openrc&#8221;/&#8221;novarc&#8221; para cargar las variables de entorno y no tener que especificarslas a Cinder.</p>
+
+<p>PROBLEMA: en cada iteración de &#8220;Chef client&#8221; el archivo se regerará al valor erróneo.Cambiamos la platilla para que adapte a las especificaciones arriba mencionadas.</p>
+
+<pre>
+ARCHIvO: cinder/templates/default/targets.conf.erb
+
+Cambiamos:
+<% if %w{redhat centos fedora}.include?(node["platform"]) %>
+include /var/lib/cinder/volumes/*
+<% end %>
+<% if %w{debian ubuntu}.include?(node["platform"]) %>
+include /etc/tgt/conf.d/*.conf
+<% end %>
+default-driver iscsi
+
+Por:
+<% if %w{redhat centos fedora}.include?(node["platform"]) %>
+include /var/lib/cinder/volumes/*
+<% end %>
+<% if %w{debian ubuntu}.include?(node["platform"]) %>
+include /etc/tgt/conf.d/cinder_tgt.conf
+include /etc/tgt/conf.d/nova_tgt.conf
+<% end %>
+default-driver iscsi
+</pre>
+
+
+<p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: https://bugs.launchpad.net/cinder/+bug/1057904</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Pedro Jiménez Solís</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-05T17:45:00+01:00" pubdate data-updated="true">Dec 5<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cinder/'>cinder</a>, <a class='category' href='/blog/categories/folsom-/'>folsom,</a>, <a class='category' href='/blog/categories/openstack-/'>openstack,</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom/" data-via="pjimenezsolis" data-counturl="http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/11/16/database-access-error-in-folsom/" title="Previous Post: Database Access Error in Folsom">&laquo; Database Access Error in Folsom</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/12/05/cinder-volume-creation-error-in-folsom/">Cinder: Volume Creation Error in Folsom</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/16/database-access-error-in-folsom/">Database Access Error in Folsom</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/15/keystone-user-role-list-bug/">Keystone user-role-list bug</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/">Ubuntu Keyring password and Folsom</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/31/primeros-pasos/">Primeros Pasos</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/pedrojimenez">@pedrojimenez</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'pedrojimenez',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("pjimenezsolis", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/pjimenezsolis" class="twitter-follow-button" data-show-count="false">Follow @pjimenezsolis</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Pedro Jiménez Solís -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'myblog-pedrojimenez';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom/';
+        var disqus_url = 'http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

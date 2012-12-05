@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: folsom, | Pedro Jiménez's Blog]]></title>
+  <link href="http://pedrojimenez.github.com/blog/categories/folsom-/atom.xml" rel="self"/>
+  <link href="http://pedrojimenez.github.com/"/>
+  <updated>2012-12-05T18:17:25+01:00</updated>
+  <id>http://pedrojimenez.github.com/</id>
+  <author>
+    <name><![CDATA[Pedro Jiménez Solís]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Cinder: Volume Creation Error in Folsom]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom/"/>
+    <updated>2012-12-05T17:45:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2012/12/05/cinder-volume-creation-error-in-folsom</id>
+    <content type="html"><![CDATA[<p><img src="http://wiki.openstack.org/Icons?action=AttachFile&amp;do=get&amp;target=openstack-object-storage-icon.png" alt="Cinder" /></p>
+
+<p>Estamos inmersos en la automatización de las instalaciones de Openstack con Chef. Utilizamos actualmente una infraestructura muy sencilla con un Chef-Server local que vamos utilizando para diferentes clientes/laboratorios.</p>
+
+<p>Una de las varias modificaciones que hemos tenido que realizar ha sido con el cookbook de Cinder. Nos hemos encontrado que después de tocar atributos en el "Rol" y el "Entorno" nos seguía dando error al crear el volumen desde consola. Más específicamente un error de iSCSI:</p>
+
+<pre>
+2012-12-05 17:01:19 4046 ERROR cinder.openstack.common.rpc.amqp [-] Exception during message handling
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp Traceback (most recent call last):
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/openstack/common/rpc/amqp.py", line 276, in _process_data
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     rval = self.proxy.dispatch(ctxt, version, method, **args)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/openstack/common/rpc/dispatcher.py", line 145, in dispatch
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     return getattr(proxyobj, method)(ctxt, **kwargs)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/volume/manager.py", line 163, in create_volume
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     volume_ref['id'], {'status': 'error'})
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/contextlib.py", line 24, in __exit__
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     self.gen.next()
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/volume/manager.py", line 156, in create_volume
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     model_update = self.driver.create_export(context, volume_ref)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/volume/driver.py", line 437, in create_export
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     volume_path)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp   File "/usr/lib/python2.7/dist-packages/cinder/volume/iscsi.py", line 145, in create_iscsi_target
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp     raise exception.ISCSITargetCreateFailed(volume_id=vol_id)
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp ISCSITargetCreateFailed: Failed to create iscsi target for volume volume-4e680c7b-b8f4-43b8-a766-1996a2537474.
+2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp 
+</pre>
+
+
+<p>Buscando algo de información nos hemos topado con un pequeño <em>BUG</em>, muy sencillo ya que es un error de interpretación de la sintaxis de un archivo de configuración (<em>/etc/tgt/targets.conf</em>). En él se indica con un comodín que añadan todas las opciones de configuración en archivos del directorio <em>/etc/tgt/conf.d/</em> ... aunque parece que esta sintaxis no funciona:</p>
+
+<pre>
+ARCHIVO: /etc/tgt/targets.conf
+
+Cambiamos esto:
+include /etc/tgt/conf.d/*.conf
+default-driver iscsi
+
+
+Por los archivos que queramos incluir:
+include /etc/tgt/conf.d/cinder_tgt.conf
+include /etc/tgt/conf.d/nova_tgt.conf
+default-driver iscsi
+</pre>
+
+
+<p>Realizamos un reinicio del servicio y volvemos a crear un volumen (Volume-Test03)</p>
+
+<pre>
+root@controller:~# cinder create --display-name LV_test03 --display-description "Testing Volume 03" 2
++---------------------+--------------------------------------+
+|       Property      |                Value                 |
++---------------------+--------------------------------------+
+|     attachments     |                  []                  |
+|  availability_zone  |                 nova                 |
+|      created_at     |      2012-12-05T16:33:35.452347      |
+| display_description |          Testing Volume 03           |
+|     display_name    |              LV_test03               |
+|          id         | 6553512d-c25a-40a2-9a50-bb12d35b23bf |
+|       metadata      |                  {}                  |
+|         size        |                  2                   |
+|     snapshot_id     |                 None                 |
+|        status       |               creating               |
+|     volume_type     |                 None                 |
++---------------------+--------------------------------------+
+</pre>
+
+
+<p>Comprobamos que ahora el volumen se ha creado de manera correcta</p>
+
+<pre>
+root@controller:~# cinder list
++--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+|                  ID                  |   Status  | Display Name | Size | Volume Type | Bootable | Attached to |
++--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+| 6553512d-c25a-40a2-9a50-bb12d35b23bf | available |  LV_test03   |  2   |     None    |          |             |
+| df6949a3-beab-481c-ad43-3e6961dd1266 |   error   |  LV_test02   |  2   |     None    |          |             |
++--------------------------------------+-----------+--------------+------+-------------+----------+-------------+
+
+LOG:
+==> /var/log/cinder/cinder-api.log <==
+2012-12-05 17:33:35 INFO cinder.api.openstack.wsgi [req-b65efc22-c141-4d7d-8b55-67d5e01ca6ca 0b4cf20489b74be5955824ea9df14d4d 13b18da27978481f893cbdd938d8d78f] POST http://172.16.172.4:8776/v1/13b18da27978481f893cbdd938d8d78f/volumes
+2012-12-05 17:33:35 AUDIT cinder.api.openstack.volume.volumes [req-b65efc22-c141-4d7d-8b55-67d5e01ca6ca 0b4cf20489b74be5955824ea9df14d4d 13b18da27978481f893cbdd938d8d78f] Create volume of 2 GB
+2012-12-05 17:33:35 DEBUG cinder.quota [req-b65efc22-c141-4d7d-8b55-67d5e01ca6ca 0b4cf20489b74be5955824ea9df14d4d 13b18da27978481f893cbdd938d8d78f] Created reservations ['3c601bff-5b57-440c-88fd-f81c54d47570', '060b181f-1ee5-4d0d-99da-985d5c094d34'] reserve /usr/lib/python2.7/dist-packages/cinder/quota.py:663
+2012-12-05 17:33:35 4604 DEBUG cinder.openstack.common.rpc.amqp [-] Making asynchronous cast on cinder-scheduler... cast /usr/lib/python2.7/dist-packages/cinder/openstack/common/rpc/amqp.py:377
+</pre>
+
+
+<p>NOTA: Debe usarse un archivo "openrc"/"novarc" para cargar las variables de entorno y no tener que especificarslas a Cinder.</p>
+
+<p>PROBLEMA: en cada iteración de "Chef client" el archivo se regerará al valor erróneo.Cambiamos la platilla para que adapte a las especificaciones arriba mencionadas.</p>
+
+<pre>
+ARCHIvO: cinder/templates/default/targets.conf.erb
+
+Cambiamos:
+<% if %w{redhat centos fedora}.include?(node["platform"]) %>
+include /var/lib/cinder/volumes/*
+<% end %>
+<% if %w{debian ubuntu}.include?(node["platform"]) %>
+include /etc/tgt/conf.d/*.conf
+<% end %>
+default-driver iscsi
+
+Por:
+<% if %w{redhat centos fedora}.include?(node["platform"]) %>
+include /var/lib/cinder/volumes/*
+<% end %>
+<% if %w{debian ubuntu}.include?(node["platform"]) %>
+include /etc/tgt/conf.d/cinder_tgt.conf
+include /etc/tgt/conf.d/nova_tgt.conf
+<% end %>
+default-driver iscsi
+</pre>
+
+
+<p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: https://bugs.launchpad.net/cinder/+bug/1057904</p>
+]]></content>
+  </entry>
+  
+</feed>
