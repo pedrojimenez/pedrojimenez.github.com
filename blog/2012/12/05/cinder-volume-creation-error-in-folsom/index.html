@@ -120,8 +120,6 @@
 </pre>
 
 
-
-
 <!-- more -->
 
 
@@ -192,28 +190,30 @@ LOG:
 
 <p> Cambiamos:</p>
 
-<p> <code>ruby OLD
- &lt;% if %w{redhat centos fedora}.include?(node["platform"]) %&gt;
+<pre class=ruby>
+ <% if %w{redhat centos fedora}.include?(node["platform"]) %>
  include /var/lib/cinder/volumes/*
- &lt;% end %&gt;
- &lt;% if %w{debian ubuntu}.include?(node["platform"]) %&gt;
+ <% end %>
+ <% if %w{debian ubuntu}.include?(node["platform"]) %>
  include /etc/tgt/conf.d/*.conf
- &lt;% end %&gt;
+ <% end %>
  default-driver iscsi
-</code></p>
+</pre>
+
 
 <p> Por:</p>
 
-<p> <code>ruby NEW
- &lt;% if %w{redhat centos fedora}.include?(node["platform"]) %&gt;
+<pre class=ruby>
+ <% if %w{redhat centos fedora}.include?(node["platform"]) %>
  include /var/lib/cinder/volumes/*
- &lt;% end %&gt;
- &lt;% if %w{debian ubuntu}.include?(node["platform"]) %&gt;
+ <% end %>
+ <% if %w{debian ubuntu}.include?(node["platform"]) %>
  include /etc/tgt/conf.d/cinder_tgt.conf
  include /etc/tgt/conf.d/nova_tgt.conf
- &lt;% end %&gt;
+ <% end %>
  default-driver iscsi
-</code></p>
+</pre>
+
 
 <p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: <a href="https://bugs.launchpad.net/cinder/+bug/1057904">https://bugs.launchpad.net/cinder/+bug/1057904</a></p>
 </div>
