@@ -190,8 +190,9 @@ LOG:
 
 <p> ARCHIVO: cinder/templates/default/targets.conf.erb</p>
 
-<p> Cambiamos:
- <code>ruby OLD
+<p> Cambiamos:</p>
+
+<p> <code>ruby OLD
  &lt;% if %w{redhat centos fedora}.include?(node["platform"]) %&gt;
  include /var/lib/cinder/volumes/*
  &lt;% end %&gt;
@@ -201,8 +202,9 @@ LOG:
  default-driver iscsi
 </code></p>
 
-<p> Por:
- <code>ruby NEW
+<p> Por:</p>
+
+<p> <code>ruby NEW
  &lt;% if %w{redhat centos fedora}.include?(node["platform"]) %&gt;
  include /var/lib/cinder/volumes/*
  &lt;% end %&gt;

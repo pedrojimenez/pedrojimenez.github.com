@@ -4,7 +4,7 @@
   <title><![CDATA[Category: cinder | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/cinder/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-05T18:45:20+01:00</updated>
+  <updated>2012-12-05T18:47:01+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -116,8 +116,9 @@ LOG:
 
 <p> ARCHIVO: cinder/templates/default/targets.conf.erb</p>
 
-<p> Cambiamos:
- <code>ruby OLD
+<p> Cambiamos:</p>
+
+<p> <code>ruby OLD
  &lt;% if %w{redhat centos fedora}.include?(node["platform"]) %&gt;
  include /var/lib/cinder/volumes/*
  &lt;% end %&gt;
@@ -127,8 +128,9 @@ LOG:
  default-driver iscsi
 </code></p>
 
-<p> Por:
- <code>ruby NEW
+<p> Por:</p>
+
+<p> <code>ruby NEW
  &lt;% if %w{redhat centos fedora}.include?(node["platform"]) %&gt;
  include /var/lib/cinder/volumes/*
  &lt;% end %&gt;
