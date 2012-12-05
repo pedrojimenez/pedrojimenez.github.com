@@ -184,35 +184,35 @@ LOG:
 </pre>
 
 
-<blockquote><p>NOTA: Debe usarse un archivo &#8220;openrc&#8221;/&#8221;novarc&#8221; para cargar las variables de entorno y no tener que especificarslas a Cinder.</p>
+<blockquote><p>   <em>NOTA</em>: Debe usarse un archivo &#8220;openrc&#8221;/&#8221;novarc&#8221; para cargar las variables de entorno y no tener que especificarslas a Cinder.</p>
 
-<p>PROBLEMA: en cada iteración de &#8220;Chef client&#8221; el archivo se regerará al valor erróneo. Cambiamos la plantilla para que adapte a las especificaciones arriba mencionadas.</p></blockquote>
+<p>   <em>PROBLEMA</em>: en cada iteración de &#8220;Chef client&#8221; el archivo se regerará al valor erróneo. Cambiamos la plantilla para que adapte a las especificaciones arriba mencionadas.</p>
 
-<pre>
-ARCHIvO: cinder/templates/default/targets.conf.erb
+<pre><code> &lt;pre&gt;
+ ARCHIvO: cinder/templates/default/targets.conf.erb
+</code></pre></blockquote>
 
-Cambiamos:
-<% if %w{redhat centos fedora}.include?(node["platform"]) %>
+<p>Cambiamos:
+&lt;% if %w{redhat centos fedora}.include?(node[&#8220;platform&#8221;]) %>
+include /var/lib/cinder/volumes/<em>
+&lt;% end %>
+&lt;% if %w{debian ubuntu}.include?(node[&#8220;platform&#8221;]) %>
+include /etc/tgt/conf.d/</em>.conf
+&lt;% end %>
+default-driver iscsi</p>
+
+<p>Por:
+&lt;% if %w{redhat centos fedora}.include?(node[&#8220;platform&#8221;]) %>
 include /var/lib/cinder/volumes/*
-<% end %>
-<% if %w{debian ubuntu}.include?(node["platform"]) %>
-include /etc/tgt/conf.d/*.conf
-<% end %>
-default-driver iscsi
-
-Por:
-<% if %w{redhat centos fedora}.include?(node["platform"]) %>
-include /var/lib/cinder/volumes/*
-<% end %>
-<% if %w{debian ubuntu}.include?(node["platform"]) %>
+&lt;% end %>
+&lt;% if %w{debian ubuntu}.include?(node[&#8220;platform&#8221;]) %>
 include /etc/tgt/conf.d/cinder_tgt.conf
 include /etc/tgt/conf.d/nova_tgt.conf
-<% end %>
+&lt;% end %>
 default-driver iscsi
-</pre>
+</pre></p>
 
-
-<p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: (https://bugs.launchpad.net/cinder/+bug/1057904)</p>
+<p>Debo dar la gracias a la gente que ha estado siguiendo esto en Launchpad: <a href="https://bugs.launchpad.net/cinder/+bug/1057904">https://bugs.launchpad.net/cinder/+bug/1057904</a></p>
 </div>
 
 
