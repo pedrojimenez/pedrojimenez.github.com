@@ -4,7 +4,7 @@
   <title><![CDATA[Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-05T18:17:25+01:00</updated>
+  <updated>2012-12-05T18:20:46+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -44,6 +44,11 @@
 2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp ISCSITargetCreateFailed: Failed to create iscsi target for volume volume-4e680c7b-b8f4-43b8-a766-1996a2537474.
 2012-12-05 17:01:19 4046 TRACE cinder.openstack.common.rpc.amqp 
 </pre>
+
+
+
+
+<!-- more -->
 
 
 <p>Buscando algo de información nos hemos topado con un pequeño <em>BUG</em>, muy sencillo ya que es un error de interpretación de la sintaxis de un archivo de configuración (<em>/etc/tgt/targets.conf</em>). En él se indica con un comodín que añadan todas las opciones de configuración en archivos del directorio <em>/etc/tgt/conf.d/</em> &#8230; aunque parece que esta sintaxis no funciona:</p>
