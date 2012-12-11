@@ -4,7 +4,7 @@
   <title><![CDATA[Category: openstack, | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/openstack-/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-11T15:58:53+01:00</updated>
+  <updated>2012-12-11T16:11:42+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -23,7 +23,9 @@
 </center>
 
 
-<p>Hemos por fin arrancado nuestro laboratorio completamente con Chef y nos tocaba probar uno de los trucos/habilidades más asombrosas de Knife, BooTstrap. Gracias a este comando podremos incluir a un nodo que no estuviera dado de alta en nuestra infraestructura desde alguno de los nodos de "administración", completando su registro e instalando el software de Chef en dicho nodo. Además crea el fichero de configuración "client.rb" y los dos ficheros de claves, el de cliente (client.pem) y el del servidor (validation.pem) en el nodo.</p>
+<p>Hemos arrancado por fin nuestro laboratorio completamente con Chef y nos tocaba probar uno de los trucos/habilidades más asombrosas de Knife, BooTstrap.</p>
+
+<p>Gracias a este comando podremos incluir a un nodo que no estuviera dado de alta en nuestra infraestructura desde alguno de los nodos de "administración", completando su registro e instalando el software de Chef en dicho nodo. Además crea el fichero de configuración "client.rb" y los dos ficheros de claves, el de cliente (client.pem) y el del servidor (validation.pem) en el nodo.</p>
 
 <pre>
 [ coruscant:~ ] knife bootstrap 192.168.1.242 -x operador -P onetimepassword --sudo
@@ -45,11 +47,48 @@ Bootstrapping Chef on 192.168.1.242
 </pre>
 
 
+
+
+<!-- readmore -->
+
+
 <p>A partir de este momento desde el propio Chef Server se introduce el nodo en el entorno deseado (Folsom en nuestro caso) y se le añaden los "Roles" que vaya a desempeñar.</p>
 
-<p><blackquote>
-Se le podría pasar un archivo JSON (con la opción <strong>-j</strong>) para pasarle directamente el Entorno y los roles que se le van a aplicar. Dejo esta parte pendiente para un post posterior que rellenaré un poco más adelante y cerrar así el círculo de la instalación distribuida con Chef/Knife.
-</blackquote></p>
+<blockquote><p>Se le podría pasar un archivo JSON (con la opción <strong>-j</strong>) para pasarle directamente el Entorno y los roles que se le van a aplicar. Dejo esta parte pendiente para un post posterior
+que rellenaré un poco más adelante y cerrar así el círculo de la instalación distribuida con Chef/Knife.</p></blockquote>
+
+<p>NOTA: Si existe el fichero de claves del cliente en la máquina destino , se generará un error</p>
+
+<pre>
+[ coruscant:~ ] knife bootstrap 192.168.1.242 -x operador -P operador --sudo
+Bootstrapping Chef on 192.168.1.242
+192.168.1.242 [Tue, 11 Dec 2012 15:07:23 +0100] INFO: *** Chef 10.14.4 ***
+192.168.1.242 [Tue, 11 Dec 2012 15:07:23 +0100] INFO: HTTP Request Returned 401 Unauthorized: Failed to authenticate. Ensure that your client key is valid.
+192.168.1.242 
+192.168.1.242 ================================================================================
+192.168.1.242 Chef encountered an error attempting to load the node data for "compute02"
+192.168.1.242 ================================================================================
+192.168.1.242 
+192.168.1.242 Authentication Error:
+192.168.1.242 ---------------------
+192.168.1.242 Failed to authenticate to the chef server (http 401).
+192.168.1.242 
+192.168.1.242 Server Response:
+192.168.1.242 ----------------
+192.168.1.242 Failed to authenticate. Ensure that your client key is valid.
+192.168.1.242 
+192.168.1.242 Relevant Config Settings:
+192.168.1.242 -------------------------
+192.168.1.242 chef_server_url   "http://172.16.0.51:4000"
+192.168.1.242 node_name         "compute02"
+192.168.1.242 client_key        "/etc/chef/client.pem"
+192.168.1.242 
+192.168.1.242 If these settings are correct, your client_key may be invalid.
+192.168.1.242 
+192.168.1.242 [Tue, 11 Dec 2012 15:07:23 +0100] FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
+192.168.1.242 [Tue, 11 Dec 2012 15:07:23 +0100] FATAL: Net::HTTPServerException: 401 "Unauthorized"
+</pre>
+
 
 <p>Fuente: <a href="http://wiki.opscode.com/display/chef/Knife+Bootstrap">http://wiki.opscode.com/display/chef/Knife+Bootstrap</a>
 Fuente Alternativa: <strong>@Sfrek</strong> y <strong>@achilued</strong> (gracias por toda vuestra ayuda y paciencia)</p>
