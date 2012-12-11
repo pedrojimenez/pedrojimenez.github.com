@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Pedro Jiménez's Blog</title>
+  <title>Chef: Bootstrapping for first time - Pedro Jiménez's Blog</title>
   <meta name="author" content="Pedro Jiménez Solís">
 
   
-  <meta name="description" content="Blog Archive 2012 Chef: Bootstrapping for first time
-Dec 11 2012 posted in chef, folsom,, openstack, Cinder: Volume Creation Error in Folsom
-Dec 05 &hellip;">
+  <meta name="description" content="Hemos por fin arrancado nuestro laboratorio completamente con Chef y nos tocaba probar uno de los trucos/habilidades más asombrosas de Knife, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ Dec 05 &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://pedrojimenez.github.com/blog/archives/">
+  <link rel="canonical" href="http://pedrojimenez.github.com/blog/2012/12/11/chef-bootstrapping-for-first-time/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -65,102 +63,126 @@ Dec 05 &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">Chef: Bootstrapping for First Time</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-11T15:36:00+01:00" pubdate data-updated="true">Dec 11<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
-
-  
-  <h2>2012</h2>
-
-<article>
-  
-<h1><a href="/blog/2012/12/11/chef-bootstrapping-for-first-time/">Chef: Bootstrapping for first time</a></h1>
-<time datetime="2012-12-11T15:36:00+01:00" pubdate><span class='month'>Dec</span> <span class='day'>11</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/folsom-/'>folsom,</a>, <a class='category' href='/blog/categories/openstack-/'>openstack,</a></span>
-</footer>
+<div class="entry-content"><center>
+<img align=center src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
+</center>
 
 
-</article>
+<p>Hemos por fin arrancado nuestro laboratorio completamente con Chef y nos tocaba probar uno de los trucos/habilidades más asombrosas de Knife, BooTstrap. Gracias a este comando podremos incluir a un nodo que no estuviera dado de alta en nuestra infraestructura desde alguno de los nodos de &#8220;administración&#8221;, completando su registro e instalando el software de Chef en dicho nodo. Además crea el fichero de configuración &#8220;client.rb&#8221; y los dos ficheros de claves, el de cliente (client.pem) y el del servidor (validation.pem) en el nodo.</p>
+
+<pre>
+[ coruscant:~ ] knife bootstrap 192.168.1.242 -x operador -P onetimepassword --sudo
+Bootstrapping Chef on 192.168.1.242
+192.168.1.242 [Tue, 11 Dec 2012 15:14:48 +0100] INFO: *** Chef 10.14.4 ***
+192.168.1.242 [Tue, 11 Dec 2012 15:14:49 +0100] INFO: Client key /etc/chef/client.pem is not present - registering
+192.168.1.242 [Tue, 11 Dec 2012 15:14:49 +0100] INFO: HTTP Request Returned 404 Not Found: Cannot load node compute02
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Setting the run_list to [] from JSON
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Run List is []
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Run List expands to []
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Starting Chef Run for compute02
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Running start handlers
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Start handlers complete.
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Loading cookbooks []
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] WARN: Node compute02 has an empty run list.
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Chef Run complete in 0.632681 seconds
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Running report handlers
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Report handlers complete
+</pre>
 
 
+<p>A partir de este momento desde el propio Chef Server se introduce el nodo en el entorno deseado (Folsom en nuestro caso) y se le añaden los &#8220;Roles&#8221; que vaya a desempeñar.</p>
 
-<article>
-  
-<h1><a href="/blog/2012/12/05/cinder-volume-creation-error-in-folsom/">Cinder: Volume Creation Error in Folsom</a></h1>
-<time datetime="2012-12-05T17:45:00+01:00" pubdate><span class='month'>Dec</span> <span class='day'>05</span> <span class='year'>2012</span></time>
+<p><blackquote>
+Se le podría pasar un archivo JSON (con la opción <strong>-j</strong>) para pasarle directamente el Entorno y los roles que se le van a aplicar. Dejo esta parte pendiente para un post posterior que rellenaré un poco más adelante y cerrar así el círculo de la instalación distribuida con Chef/Knife.
+</blackquote></p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/cinder/'>cinder</a>, <a class='category' href='/blog/categories/folsom-/'>folsom,</a>, <a class='category' href='/blog/categories/openstack-/'>openstack,</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/11/16/database-access-error-in-folsom/">Database Access Error in Folsom</a></h1>
-<time datetime="2012-11-16T11:32:00+01:00" pubdate><span class='month'>Nov</span> <span class='day'>16</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/cookbooks/'>cookbooks</a>, <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/11/15/keystone-user-role-list-bug/">Keystone user-role-list bug</a></h1>
-<time datetime="2012-11-15T15:02:00+01:00" pubdate><span class='month'>Nov</span> <span class='day'>15</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/keystone/'>keystone</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/">Ubuntu Keyring password and Folsom</a></h1>
-<time datetime="2012-11-15T11:16:00+01:00" pubdate><span class='month'>Nov</span> <span class='day'>15</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/nova/'>nova</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2012/10/31/primeros-pasos/">Primeros Pasos</a></h1>
-<time datetime="2012-10-31T12:03:00+01:00" pubdate><span class='month'>Oct</span> <span class='day'>31</span> <span class='year'>2012</span></time>
-
-
-</article>
-
+<p>Fuente: <a href="http://wiki.opscode.com/display/chef/Knife+Bootstrap">http://wiki.opscode.com/display/chef/Knife+Bootstrap</a></p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Pedro Jiménez Solís</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-11T15:36:00+01:00" pubdate data-updated="true">Dec 11<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/folsom-/'>folsom,</a>, <a class='category' href='/blog/categories/openstack-/'>openstack,</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pedrojimenez.github.com/blog/2012/12/11/chef-bootstrapping-for-first-time/" data-via="pjimenezsolis" data-counturl="http://pedrojimenez.github.com/blog/2012/12/11/chef-bootstrapping-for-first-time/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/12/05/cinder-volume-creation-error-in-folsom/" title="Previous Post: Cinder: Volume Creation Error in Folsom">&laquo; Cinder: Volume Creation Error in Folsom</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -261,7 +283,10 @@ Dec 05 &hellip;">
       var disqus_shortname = 'myblog-pedrojimenez';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pedrojimenez.github.com/blog/2012/12/11/chef-bootstrapping-for-first-time/';
+        var disqus_url = 'http://pedrojimenez.github.com/blog/2012/12/11/chef-bootstrapping-for-first-time/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

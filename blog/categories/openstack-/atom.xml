@@ -4,7 +4,7 @@
   <title><![CDATA[Category: openstack, | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/openstack-/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-05T19:10:09+01:00</updated>
+  <updated>2012-12-11T15:56:43+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -12,6 +12,48 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Chef: Bootstrapping for first time]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2012/12/11/chef-bootstrapping-for-first-time/"/>
+    <updated>2012-12-11T15:36:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2012/12/11/chef-bootstrapping-for-first-time</id>
+    <content type="html"><![CDATA[<center>
+<img align=center src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
+</center>
+
+
+<p>Hemos por fin arrancado nuestro laboratorio completamente con Chef y nos tocaba probar uno de los trucos/habilidades más asombrosas de Knife, BooTstrap. Gracias a este comando podremos incluir a un nodo que no estuviera dado de alta en nuestra infraestructura desde alguno de los nodos de "administración", completando su registro e instalando el software de Chef en dicho nodo. Además crea el fichero de configuración "client.rb" y los dos ficheros de claves, el de cliente (client.pem) y el del servidor (validation.pem) en el nodo.</p>
+
+<pre>
+[ coruscant:~ ] knife bootstrap 192.168.1.242 -x operador -P onetimepassword --sudo
+Bootstrapping Chef on 192.168.1.242
+192.168.1.242 [Tue, 11 Dec 2012 15:14:48 +0100] INFO: *** Chef 10.14.4 ***
+192.168.1.242 [Tue, 11 Dec 2012 15:14:49 +0100] INFO: Client key /etc/chef/client.pem is not present - registering
+192.168.1.242 [Tue, 11 Dec 2012 15:14:49 +0100] INFO: HTTP Request Returned 404 Not Found: Cannot load node compute02
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Setting the run_list to [] from JSON
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Run List is []
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Run List expands to []
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Starting Chef Run for compute02
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Running start handlers
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Start handlers complete.
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Loading cookbooks []
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] WARN: Node compute02 has an empty run list.
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Chef Run complete in 0.632681 seconds
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Running report handlers
+192.168.1.242 [Tue, 11 Dec 2012 15:14:50 +0100] INFO: Report handlers complete
+</pre>
+
+
+<p>A partir de este momento desde el propio Chef Server se introduce el nodo en el entorno deseado (Folsom en nuestro caso) y se le añaden los "Roles" que vaya a desempeñar.</p>
+
+<p><blackquote>
+Se le podría pasar un archivo JSON (con la opción <strong>-j</strong>) para pasarle directamente el Entorno y los roles que se le van a aplicar. Dejo esta parte pendiente para un post posterior que rellenaré un poco más adelante y cerrar así el círculo de la instalación distribuida con Chef/Knife.
+</blackquote></p>
+
+<p>Fuente: <a href="http://wiki.opscode.com/display/chef/Knife+Bootstrap">http://wiki.opscode.com/display/chef/Knife+Bootstrap</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Cinder: Volume Creation Error in Folsom]]></title>
