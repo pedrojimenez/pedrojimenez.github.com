@@ -4,7 +4,7 @@
   <title><![CDATA[Category: chef | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/chef/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-11T15:56:43+01:00</updated>
+  <updated>2012-12-11T15:58:53+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -51,7 +51,8 @@ Bootstrapping Chef on 192.168.1.242
 Se le podría pasar un archivo JSON (con la opción <strong>-j</strong>) para pasarle directamente el Entorno y los roles que se le van a aplicar. Dejo esta parte pendiente para un post posterior que rellenaré un poco más adelante y cerrar así el círculo de la instalación distribuida con Chef/Knife.
 </blackquote></p>
 
-<p>Fuente: <a href="http://wiki.opscode.com/display/chef/Knife+Bootstrap">http://wiki.opscode.com/display/chef/Knife+Bootstrap</a></p>
+<p>Fuente: <a href="http://wiki.opscode.com/display/chef/Knife+Bootstrap">http://wiki.opscode.com/display/chef/Knife+Bootstrap</a>
+Fuente Alternativa: <strong>@Sfrek</strong> y <strong>@achilued</strong> (gracias por toda vuestra ayuda y paciencia)</p>
 ]]></content>
   </entry>
   
