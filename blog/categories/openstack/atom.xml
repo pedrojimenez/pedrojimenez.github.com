@@ -4,7 +4,7 @@
   <title><![CDATA[Category: openstack | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/openstack/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-12T12:53:43+01:00</updated>
+  <updated>2012-12-12T13:36:44+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -12,6 +12,126 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ubuntu python-keystoneclient Dependency Error]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/"/>
+    <updated>2012-12-12T12:59:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error</id>
+    <content type="html"><![CDATA[<p>Después de tener la infraestructura completa y funcional, nos encontramos ayer con un extraño error que no nos permitía el uso de Glance para poder hacer un "upload" de las imágenes. Nos encontramos con un error de dependencias en uno de los paquetes necesarios en la invocación de Glance.</p>
+
+<p>Buscando algo más de información vemos que con la paquetería actual se llega a un error de versionado en el paquete <strong>python-keystoneclient</strong> y no permite que glance se ejecute.</p>
+
+<pre>
+root@controller:~# glance index
+Traceback (most recent call last):
+File "/usr/bin/glance", line 5, in <module>
+from pkg_resources import load_entry_point
+File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 2711, in <module>
+parse_requirements(__requires__), Environment()
+ File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 584, in resolve
+raise DistributionNotFound(req)
+pkg_resources.DistributionNotFound: python-keystoneclient>=0.1.2,<0.2
+          
+root@controller:~# glance image-list
+Traceback (most recent call last):
+File "/usr/bin/glance", line 5, in <module>
+from pkg_resources import load_entry_point
+File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 2711, in <module>
+parse_requirements(__requires__), Environment()
+File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 584, in resolve
+raise DistributionNotFound(req)
+pkg_resources.DistributionNotFound: python-keystoneclient>=0.1.2,<0.2
+</pre>
+
+
+
+
+<!-- more -->
+
+
+<blockquote><p>AYUDA: Contactamos con nuestro Mcgyver personal, Gracias @achilued por la ayuda para ver la luz :)</p></blockquote>
+
+<br />
+
+
+<p>Lo primero vamos a comprobar con qué versión de paquetería contamos, tanto de los paquetes principales como de los auxiliares.</p>
+
+<pre>
+root@controller:~# dpkg -l | egrep 'nova|glance|python-keystone'
+ii  glance                           2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - Daemons
+ii  glance-api                       2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - API
+ii  glance-common                    2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - Common
+ii  glance-registry                  2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - Registry
+ii  nova-api-ec2                     2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - EC2 API frontend
+rc  nova-api-metadata                2012.2+git201210091907~precise-0ubuntu1              OpenStack Compute - metadata API frontend
+ii  nova-api-os-compute              2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - OpenStack Compute API frontend
+rc  nova-api-os-volume               2012.2+git201210091907~precise-0ubuntu1              OpenStack Compute - OpenStack Volume API frontend
+ii  nova-cert                        2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - certificate management
+ii  nova-common                      2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - common files
+ii  nova-consoleauth                 2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - Console Authenticator
+ii  nova-novncproxy                  2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - NoVNC proxy
+ii  nova-scheduler                   2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - virtual machine scheduler
+rc  nova-volume                      2012.2+git201210091907~precise-0ubuntu1              OpenStack Compute - storage
+ii  python-glance                    2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - Python library
+ii  python-glanceclient              1:0.5.1.8.cdc06d9+git201210051430~precise-0ubuntu1   Client library for Openstack glance server.
+ii  python-keystone                  2012.2.2+git201212061213~precise-0ubuntu1            OpenStack identity service - Python library
+ii  python-keystoneclient            1:0.2.0.1.ge4ed1f3+git201211221523~precise-0ubuntu1  Client library for OpenStack Identity API
+ii  python-nova                      2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute Python libraries
+ii  python-novaclient                1:2.9.0.49.gdc6285c+git201211221531~precise-0ubuntu1 client library for OpenStack Compute API
+</pre>
+
+
+<p>Vemos un apunte clarísimo y es que la versión del paquete <em>python-keystoneclient</em> es efectivamente superior a 0.2 , más concretamente se encuentra instalada la vesión <strong>0.2.0.1</strong> que al no cumplir con las exigencias del paquete Glance nos expulsa de su ejecución. Vamos a tirar un poco del hilo para ver si podemos arreglar este entuerto.</p>
+
+<p>PASO 1: Se buscan las dependencias que tiene Glance y encontramos el directorio donde se aloja el cliente.</p>
+
+<pre>
+root@controller:~# cat /usr/bin/glance
+#!/usr/bin/python
+# EASY-INSTALL-ENTRY-SCRIPT: 'python-glanceclient==0.5.1.8.cdc06d9','console_scripts','glance'
+__requires__ = 'python-glanceclient==0.5.1.8.cdc06d9'
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+            load_entry_point('python-glanceclient==0.5.1.8.cdc06d9', 'console_scripts', 'glance')()
+            )
+</pre>
+
+
+<p>PASO2: Dentro de dicho directorio editamos el fichero con las dependecias y se elimina la superior del paquete <strong>python-keystoneclient</strong>.</p>
+
+<pre>
+RUTA: /usr/lib/python2.7/dist-packages/python_glanceclient-0.5.1.8.cdc06d9.egg-info/requires.txt 
+
+CAMBIAMOS:
+prettytable>=0.6,<0.7
+python-keystoneclient>=0.1.2,<0.2
+warlock<2
+
+POR:
+prettytable>=0.6,<0.7
+python-keystoneclient>=0.1.2
+warlock<2
+</pre>
+
+
+<p>PASO3: Comprobamos que Glance vuelve a operar con normalidad.</p>
+
+<pre>
+#glance index
+ID                                   Name                           Disk Format          Container Format     Size          
+------------------------------------ ------------------------------ -------------------- -------------------- --------------
+de4bdf11-5b5e-4ca7-a29c-2c38ebe07697 cirros-image                   qcow2                bare                        9761280
+</pre>
+
+
+<p>Más información:
+<a href="https://bugs.launchpad.net/openstack-manuals/+bug/1064449">https://bugs.launchpad.net/openstack-manuals/+bug/1064449</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Database Access Error in Folsom]]></title>

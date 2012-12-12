@@ -9,7 +9,7 @@
   <meta name="author" content="Pedro Jiménez Solís">
 
   
-  <meta name="description" content="Hemos arrancado por fin nuestro laboratorio completamente con Chef y nos tocaba probar uno de los trucos/habilidades más asombrosas de Knife, &hellip;">
+  <meta name="description" content="Después de tener la infraestructura completa y funcional, nos encontramos ayer con un extraño error que no nos permitía el uso de Glance para poder &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,76 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/">Ubuntu Python-keystoneclient Dependency Error</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-12T12:59:00+01:00" pubdate data-updated="true">Dec 12<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Después de tener la infraestructura completa y funcional, nos encontramos ayer con un extraño error que no nos permitía el uso de Glance para poder hacer un &#8220;upload&#8221; de las imágenes. Nos encontramos con un error de dependencias en uno de los paquetes necesarios en la invocación de Glance.</p>
+
+<p>Buscando algo más de información vemos que con la paquetería actual se llega a un error de versionado en el paquete <strong>python-keystoneclient</strong> y no permite que glance se ejecute.</p>
+
+<pre>
+root@controller:~# glance index
+Traceback (most recent call last):
+File "/usr/bin/glance", line 5, in <module>
+from pkg_resources import load_entry_point
+File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 2711, in <module>
+parse_requirements(__requires__), Environment()
+ File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 584, in resolve
+raise DistributionNotFound(req)
+pkg_resources.DistributionNotFound: python-keystoneclient>=0.1.2,<0.2
+          
+root@controller:~# glance image-list
+Traceback (most recent call last):
+File "/usr/bin/glance", line 5, in <module>
+from pkg_resources import load_entry_point
+File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 2711, in <module>
+parse_requirements(__requires__), Environment()
+File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 584, in resolve
+raise DistributionNotFound(req)
+pkg_resources.DistributionNotFound: python-keystoneclient>=0.1.2,<0.2
+</pre>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -505,6 +575,10 @@ root@controller:~# nova --no_cache volume-list
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/">Ubuntu python-keystoneclient Dependency Error</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/11/chef-bootstrapping-for-first-time/">Chef: Bootstrapping for first time</a>
       </li>
     
@@ -518,10 +592,6 @@ root@controller:~# nova --no_cache volume-list
     
       <li class="post">
         <a href="/blog/2012/11/15/keystone-user-role-list-bug/">Keystone user-role-list bug</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/">Ubuntu Keyring password and Folsom</a>
       </li>
     
   </ul>
