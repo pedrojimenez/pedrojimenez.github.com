@@ -4,7 +4,7 @@
   <title><![CDATA[Category: openstack | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/openstack/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-11T16:14:55+01:00</updated>
+  <updated>2012-12-12T12:53:43+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -104,6 +104,11 @@ keystone user-role-list
 </pre>
 
 
+
+
+<!-- more -->
+
+
 <p>Para este listado el usuario sigue siendo el mismo: 4be33d2e90ad42ce867954b07aa7b908 y por un ratillo incluso pensé que el resto de usuarios no se habrían creado, pero no era realmente así. Un pequeño vistazo a la DB me lo dejó bien claro. Buscando algo de información sobre el comando (maravilla de doc oficial) y al hacer el "help" del comando me encontré que se puede especificar el usuario y el tenant.</p>
 
 <p>Pues manos a la obra, ahora es viable sacar el resto de la información para completar lo que en un futuro será la salida estandar del comando. Tampoco estaría mal poder especificar uno de los dos parámetros, o bien el usuario o bien el tenant, pero os adelanto que no es así. Hay que especificar ambos.</p>
@@ -144,9 +149,9 @@ Rol Admin: | 25fcba9f9b9a4982a77f70fd2c84fc31 |
 <p>Espero que os sirva para un apuro o para el debug de vuestra plataforma.</p>
 
 <p>Enlaces:
-<u>http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-users-tenants-and-roles-with-python-keystoneclient.html</u><br />
-<u>https://bugs.launchpad.net/python-keystoneclient/+bug/1058750</u><br />
-<u>http://www.gossamer-threads.com/lists/openstack/dev/19510</u><br /></p>
+<a href="http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-users-tenants-and-roles-with-python-keystoneclient.html">http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-users-tenants-and-roles-with-python-keystoneclient.html</a><br />
+<a href="https://bugs.launchpad.net/python-keystoneclient/+bug/1058750">https://bugs.launchpad.net/python-keystoneclient/+bug/1058750</a><br />
+<a href="http://www.gossamer-threads.com/lists/openstack/dev/19510">http://www.gossamer-threads.com/lists/openstack/dev/19510</a><br /></p>
 ]]></content>
   </entry>
   
@@ -195,9 +200,9 @@ root@controller:~# nova --no_cache volume-list
 
 <p>Enlaces:</p>
 
-<p><u>https://bugs.launchpad.net/python-novaclient/+bug/1020238</u></p>
+<p><a href="https://bugs.launchpad.net/python-novaclient/+bug/1020238">https://bugs.launchpad.net/python-novaclient/+bug/1020238</a></p>
 
-<p><u>https://lists.launchpad.net/openstack/msg16095.html (solución de Vish)</u></p>
+<p><a href="https://lists.launchpad.net/openstack/msg16095.html">https://lists.launchpad.net/openstack/msg16095.html</a> (solución de Vish)</p>
 ]]></content>
   </entry>
   

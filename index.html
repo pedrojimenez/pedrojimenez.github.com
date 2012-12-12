@@ -359,51 +359,14 @@ keystone user-role-list
 </pre>
 
 
-<p>Para este listado el usuario sigue siendo el mismo: 4be33d2e90ad42ce867954b07aa7b908 y por un ratillo incluso pensé que el resto de usuarios no se habrían creado, pero no era realmente así. Un pequeño vistazo a la DB me lo dejó bien claro. Buscando algo de información sobre el comando (maravilla de doc oficial) y al hacer el &#8220;help&#8221; del comando me encontré que se puede especificar el usuario y el tenant.</p>
-
-<p>Pues manos a la obra, ahora es viable sacar el resto de la información para completar lo que en un futuro será la salida estandar del comando. Tampoco estaría mal poder especificar uno de los dos parámetros, o bien el usuario o bien el tenant, pero os adelanto que no es así. Hay que especificar ambos.</p>
-
-<pre>
-keystone help user-role-list
-usage: keystone user-role-list [--user-id <user-id>] [--tenant-id <tenant-id>]
-
-List roles granted to a user
-
-Optional arguments:
-  --user-id <user-id>   List roles granted to a user
-  --tenant-id <tenant-id>
-                        List roles granted on a tenant
-
-- - - - - - - - - - -
-user Glance:
-root@controller:/etc/glance# keystone user-role-list --user-id f6b72f21414246d0a924fc883e694f45 --tenant-id 15eafea37ce24b42ab60b1fe0f882d98
-+----------------------------------+-------+----------------------------------+----------------------------------+
-|                id                |  name |             user_id              |            tenant_id             |
-+----------------------------------+-------+----------------------------------+----------------------------------+
-| 25fcba9f9b9a4982a77f70fd2c84fc31 | admin | f6b72f21414246d0a924fc883e694f45 | 15eafea37ce24b42ab60b1fe0f882d98 |
-+----------------------------------+-------+----------------------------------+----------------------------------+
-
-user Nova:
-root@controller:/etc/glance# keystone user-role-list  --user-id 8c53cdc1f4354e77a8e2abd39728b20d --tenant-id 15eafea37ce24b42ab60b1fe0f882d98
-+----------------------------------+-------+----------------------------------+----------------------------------+
-|                id                |  name |             user_id              |            tenant_id             |
-+----------------------------------+-------+----------------------------------+----------------------------------+
-| 25fcba9f9b9a4982a77f70fd2c84fc31 | admin | 8c53cdc1f4354e77a8e2abd39728b20d | 15eafea37ce24b42ab60b1fe0f882d98 |
-+----------------------------------+-------+----------------------------------+----------------------------------+
 
 
-Rol Admin: | 25fcba9f9b9a4982a77f70fd2c84fc31 |
-</pre>
-
-
-<p>Espero que os sirva para un apuro o para el debug de vuestra plataforma.</p>
-
-<p>Enlaces:
-<u>http://docs.openstack.org/trunk/openstack-compute/admin/content/adding-users-tenants-and-roles-with-python-keystoneclient.html</u><br />
-<u>https://bugs.launchpad.net/python-keystoneclient/+bug/1058750</u><br />
-<u>http://www.gossamer-threads.com/lists/openstack/dev/19510</u><br /></p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/15/keystone-user-role-list-bug/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -479,9 +442,9 @@ root@controller:~# nova --no_cache volume-list
 
 <p>Enlaces:</p>
 
-<p><u>https://bugs.launchpad.net/python-novaclient/+bug/1020238</u></p>
+<p><a href="https://bugs.launchpad.net/python-novaclient/+bug/1020238">https://bugs.launchpad.net/python-novaclient/+bug/1020238</a></p>
 
-<p><u>https://lists.launchpad.net/openstack/msg16095.html (solución de Vish)</u></p>
+<p><a href="https://lists.launchpad.net/openstack/msg16095.html">https://lists.launchpad.net/openstack/msg16095.html</a> (solución de Vish)</p>
 </div>
   
   

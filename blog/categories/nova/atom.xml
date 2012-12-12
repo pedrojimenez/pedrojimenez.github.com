@@ -4,7 +4,7 @@
   <title><![CDATA[Category: nova | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/nova/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-11T16:14:55+01:00</updated>
+  <updated>2012-12-12T12:53:43+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -58,9 +58,9 @@ root@controller:~# nova --no_cache volume-list
 
 <p>Enlaces:</p>
 
-<p><u>https://bugs.launchpad.net/python-novaclient/+bug/1020238</u></p>
+<p><a href="https://bugs.launchpad.net/python-novaclient/+bug/1020238">https://bugs.launchpad.net/python-novaclient/+bug/1020238</a></p>
 
-<p><u>https://lists.launchpad.net/openstack/msg16095.html (solución de Vish)</u></p>
+<p><a href="https://lists.launchpad.net/openstack/msg16095.html">https://lists.launchpad.net/openstack/msg16095.html</a> (solución de Vish)</p>
 ]]></content>
   </entry>
   
