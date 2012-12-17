@@ -4,7 +4,7 @@
   <title><![CDATA[Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-17T10:37:44+01:00</updated>
+  <updated>2012-12-17T10:39:21+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -86,19 +86,30 @@ ii  python-novaclient                1:2.9.0.49.gdc6285c+git201211221531~precise
 
 <p>PASO 1: Se buscan las dependencias que tiene Glance y encontramos el directorio donde se aloja el cliente.</p>
 
-<pre>
-root@controller:~# cat /usr/bin/glance
-#!/usr/bin/python
-# EASY-INSTALL-ENTRY-SCRIPT: 'python-glanceclient==0.5.1.8.cdc06d9','console_scripts','glance'
-__requires__ = 'python-glanceclient==0.5.1.8.cdc06d9'
-import sys
-from pkg_resources import load_entry_point
-
-if __name__ == '__main__':
-    sys.exit(
-            load_entry_point('python-glanceclient==0.5.1.8.cdc06d9', 'console_scripts', 'glance')()
-            )
-</pre>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ root@controller:~# cat /usr/bin/glance
+</span><span class='line'>
+</span><span class='line'>#!/usr/bin/python
+</span><span class='line'># EASY-INSTALL-ENTRY-SCRIPT: 'python-glanceclient==0.5.1.8.cdc06d9','console_scripts','glance'
+</span><span class='line'>__requires__ = 'python-glanceclient==0.5.1.8.cdc06d9'
+</span><span class='line'>import sys
+</span><span class='line'>from pkg_resources import load_entry_point
+</span><span class='line'>
+</span><span class='line'>if __name__ == '__main__':
+</span><span class='line'>    sys.exit(
+</span><span class='line'>            load_entry_point('python-glanceclient==0.5.1.8.cdc06d9', 'console_scripts', 'glance')()
+</span><span class='line'>          )</span></code></pre></td></tr></table></div></figure>
 
 
 <p>PASO2: Dentro de dicho directorio editamos el fichero con las dependecias y se elimina la superior del paquete <strong>python-keystoneclient</strong>.</p>

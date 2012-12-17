@@ -4,7 +4,7 @@
   <title><![CDATA[Category: folsom | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/folsom/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-17T10:37:44+01:00</updated>
+  <updated>2012-12-17T10:39:21+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -84,22 +84,26 @@ ii  python-novaclient                1:2.9.0.49.gdc6285c+git201211221531~precise
 
 <p>Vemos un apunte clarísimo y es que la versión del paquete <em>python-keystoneclient</em> es efectivamente superior a 0.2 , más concretamente se encuentra instalada la vesión <strong>0.2.0.1</strong> que al no cumplir con las exigencias del paquete Glance nos expulsa de su ejecución. Vamos a tirar un poco del hilo para ver si podemos arreglar este entuerto.</p>
 
-<p>PASO 1: Se buscan las dependencias que tiene Glance y encontramos el directorio donde se aloja el cliente.</p>
+<p>PASO 1: Se buscan las dependencias que tiene Glance y encontramos el directorio donde se aloja el cliente.
+```
+$ root@controller:~# cat /usr/bin/glance</p>
 
-<pre>
-root@controller:~# cat /usr/bin/glance
-#!/usr/bin/python
-# EASY-INSTALL-ENTRY-SCRIPT: 'python-glanceclient==0.5.1.8.cdc06d9','console_scripts','glance'
-__requires__ = 'python-glanceclient==0.5.1.8.cdc06d9'
+<h1>!/usr/bin/python</h1>
+
+<h1>EASY-INSTALL-ENTRY-SCRIPT: 'python-glanceclient==0.5.1.8.cdc06d9','console_scripts','glance'</h1>
+
+<p><strong>requires</strong> = 'python-glanceclient==0.5.1.8.cdc06d9'
 import sys
-from pkg_resources import load_entry_point
+from pkg_resources import load_entry_point</p>
 
-if __name__ == '__main__':
-    sys.exit(
-            load_entry_point('python-glanceclient==0.5.1.8.cdc06d9', 'console_scripts', 'glance')()
-            )
-</pre>
+<p>if <strong>name</strong> == '<strong>main</strong>':</p>
 
+<pre><code>sys.exit(
+        load_entry_point('python-glanceclient==0.5.1.8.cdc06d9', 'console_scripts', 'glance')()
+        )
+</code></pre>
+
+<p>```</p>
 
 <p>PASO2: Dentro de dicho directorio editamos el fichero con las dependecias y se elimina la superior del paquete <strong>python-keystoneclient</strong>.</p>
 
