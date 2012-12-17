@@ -4,7 +4,7 @@
   <title><![CDATA[Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-17T10:32:18+01:00</updated>
+  <updated>2012-12-17T10:37:44+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -120,12 +120,14 @@ warlock<2
 
 <p>PASO3: Comprobamos que Glance vuelve a operar con normalidad.</p>
 
-<figure class="code"><figcaption></figcaption>
-#glance index
-ID                                   Name                           Disk Format          Container Format     Size          
-&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212; &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212; &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211; &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8211; &#8212;&#8212;&#8212;&#8212;&#8211;
-de4bdf11-5b5e-4ca7-a29c-2c38ebe07697 cirros-image                   qcow2                bare                        9761280
-</figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ glance index
+</span><span class='line'>ID                                   Name                           Disk Format          Container Format     Size          
+</span><span class='line'>------------------------------------ ------------------------------ -------------------- -------------------- --------------
+</span><span class='line'>de4bdf11-5b5e-4ca7-a29c-2c38ebe07697 cirros-image                   qcow2                bare                        9761280</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Más información:

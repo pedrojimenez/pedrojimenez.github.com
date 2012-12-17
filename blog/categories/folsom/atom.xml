@@ -4,7 +4,7 @@
   <title><![CDATA[Category: folsom | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/folsom/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-17T10:32:18+01:00</updated>
+  <updated>2012-12-17T10:37:44+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -119,16 +119,14 @@ warlock<2
 
 
 <p>PASO3: Comprobamos que Glance vuelve a operar con normalidad.
-<figure class="code"><figcaption></figcaption></p>
-
-<h1>glance index</h1>
-
-<p>ID                                   Name                           Disk Format          Container Format     Size</p>
+```
+$ glance index
+ID                                   Name                           Disk Format          Container Format     Size</p>
 
 <hr />
 
 <p>de4bdf11-5b5e-4ca7-a29c-2c38ebe07697 cirros-image                   qcow2                bare                        9761280
-</figure></p>
+```</p>
 
 <p>Más información:
 <a href="https://bugs.launchpad.net/openstack-manuals/+bug/1064449">https://bugs.launchpad.net/openstack-manuals/+bug/1064449</a></p>
