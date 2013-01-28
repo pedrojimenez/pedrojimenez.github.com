@@ -4,7 +4,7 @@
   <title><![CDATA[Category: openstack | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/openstack/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2013-01-28T16:56:01+01:00</updated>
+  <updated>2013-01-28T16:57:35+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -26,42 +26,40 @@ src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
 
 
 
-<h2> *¿ Quiénes son ?*
+<h2> *¿ Quiénes son ?*</h2>
 
-Hemos de detenernos un instante para hacer meción especial a las 2 maravillosas
+
+<p>Hemos de detenernos un instante para hacer meción especial a las 2 maravillosas
 gemas que nos harán la vida muy sencilla con OpenStack. Hablamos de "librarian"
 y de "spiceweasel". Para que la presentación sea bastante más oficial debemos
 considerar que librarian será nuestro "cazador de cookbooks" y que spiceweasel
 será el que los aplique contra el Servidor de Chef que elijamos, bien sea
 público o privado. Además SpiceWeasel se encargará de aplicar roles/cookbooks a
 los nodos directamente. Con esta pequeña "joya" se pueden hacer despliegues
-verdaderamente veloces.
+verdaderamente veloces.</p>
 
-Librarian: 
+<p>Librarian:</p>
 
-Librarian-Chef is a bundler for infrastructure repositories using Chef. You can
+<p>Librarian-Chef is a bundler for infrastructure repositories using Chef. You can
 use Librarian-Chef to resolve your infrastructure's cookbook dependencies,
-fetch them, and install them into your infrastructure repository.
+fetch them, and install them into your infrastructure repository.</p>
 
-Enlace: <https://github.com/applicationsonline/librarian>
+<p>Enlace: <a href="https://github.com/applicationsonline/librarian">https://github.com/applicationsonline/librarian</a></p>
 
+<p>SpiceWeasel:</p>
 
-SpiceWeasel: 
+<p>Provides a CLI tool for generating knife commands to build Chef-managed
+infrastructure from a simple JSON or YAML file.</p>
 
-Provides a CLI tool for generating knife commands to build Chef-managed
-infrastructure from a simple JSON or YAML file.
-
-Enlace: <http://wiki.opscode.com/display/chef/Spiceweasel>
+<p>Enlace: <a href="http://wiki.opscode.com/display/chef/Spiceweasel">http://wiki.opscode.com/display/chef/Spiceweasel</a></p>
 
 <!-- more -->
 
-<h2.> *Instalación*
 
-Así pues para poder automatizar tareas de instalación los utilizaremos a ambos.
-Por un parte 
+<p>&lt;h2.> <em>Instalación</em></h2></p>
 
-
-
+<p>Así pues para poder automatizar tareas de instalación los utilizaremos a ambos.
+Por un parte</p>
 
 <pre><code class='bash'>
 pjimenez@pedro-pruebas:~/openstack-chef-repo$ spiceweasel infrastructure.yml | sh
