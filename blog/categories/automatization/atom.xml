@@ -4,7 +4,7 @@
   <title><![CDATA[Category: automatization | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/automatization/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2013-01-28T16:57:35+01:00</updated>
+  <updated>2013-01-28T17:38:52+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -26,7 +26,7 @@ src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
 
 
 
-<h2> *¿ Quiénes son ?*</h2>
+<h2>¿ Quiénes son ?</h2>
 
 
 <p>Hemos de detenernos un instante para hacer meción especial a las 2 maravillosas
@@ -38,7 +38,7 @@ público o privado. Además SpiceWeasel se encargará de aplicar roles/cookbooks
 los nodos directamente. Con esta pequeña "joya" se pueden hacer despliegues
 verdaderamente veloces.</p>
 
-<p>Librarian:</p>
+<p><strong>Librarian</strong></p>
 
 <p>Librarian-Chef is a bundler for infrastructure repositories using Chef. You can
 use Librarian-Chef to resolve your infrastructure's cookbook dependencies,
@@ -46,7 +46,7 @@ fetch them, and install them into your infrastructure repository.</p>
 
 <p>Enlace: <a href="https://github.com/applicationsonline/librarian">https://github.com/applicationsonline/librarian</a></p>
 
-<p>SpiceWeasel:</p>
+<p><strong>SpiceWeasel</strong></p>
 
 <p>Provides a CLI tool for generating knife commands to build Chef-managed
 infrastructure from a simple JSON or YAML file.</p>
@@ -56,10 +56,108 @@ infrastructure from a simple JSON or YAML file.</p>
 <!-- more -->
 
 
-<p>&lt;h2.> <em>Instalación</em></h2></p>
+
+
+<h2>Instalación</h2>
+
 
 <p>Así pues para poder automatizar tareas de instalación los utilizaremos a ambos.
-Por un parte</p>
+En la mayoría de los casos, la diferentes empresas como la nuestra, querrán
+poder realizar modificaciones a los "cookbooks" o al menos seleccionar la
+fuente desde la que descargarlos/utilizarlos.</p>
+
+<h3>Librarian</h3>
+
+
+<p>Necesitamos instalarlo como gema:</p>
+
+<pre><code class='bash'>
+gem install librarian
+</code></pre>
+
+
+<p>Ahora entra en acción Librarian-Chef y su combinación con la estructura del
+chef-repo oficial de OpsCode. Como primer paso necesitamos descargar dicho
+repositorio desde GiT.</p>
+
+<pre>
+git clone https://www.github.com/cloudbau/openstack-chef-repo.get
+</pre>
+
+
+<p>En su contenido podremos especificarle desde dónde queremos descargar los
+cookbooks que se van a procesar dentro de nuestro "chef-repo".</p>
+
+<pre>
+PODEMOS VER COOKBOOKS DE LA COMUNIDAD:
+site 'http://community.opscode.com/api/v1'
+cookbook 'ntp', '1.2.0'
+cookbook 'openssh', '1.1.0'
+...
+
+O ESPECIFICARLOS MANUALMENTE:
+cookbook 'osops-utils',
+  :git => 'https://github.com/cloudbau/chef-osops-utils.git'
+
+cookbook 'rabbitmq-openstack',
+  :git => 'https://github.com/mattray/rabbitmq-openstack.git'
+</pre>
+
+
+<p>Con la lista completa de los cookbooks que necesitamos para un despligue cloud,
+"librarian" se encarga de descargarlos dentro de la estructura de nuestro repo.</p>
+
+<pre>
+operador@pedro-pruebas:~/openstack-chef-repo$ librarian-chef update
+Installing apache2 (1.2.0)
+Installing apt (1.5.0)
+Installing aws (0.100.2)
+Installing build-essential (1.1.2)
+Installing openssl (1.0.0)
+Installing mysql (1.3.0)
+Installing postgresql (1.0.0)
+Installing xfs (1.0.0)
+Installing database (1.3.6)
+Installing yum (1.0.0)
+Installing erlang (1.1.0)
+Installing ntp (1.2.0)
+Installing openssh (1.1.0)
+Installing rabbitmq (1.6.4)
+Installing selinux (0.5.2)
+Installing osops-utils (1.0.6)
+Installing keystone (5.0.0)
+Installing glance (5.0.0)
+Installing horizon (5.0.0)
+Installing sysctl (0.1.0)
+Installing nova (5.0.0)
+Installing mysql-openstack (1.0.4)
+Installing rabbitmq-openstack (1.0.4)
+</pre>
+
+
+
+
+<h3>SpiceWeasel</h3>
+
+
+<p>Se ha elegido en este primer post utiilzar el server hosted de Chef, aunque es
+cierto que la próxima vez utilizaremos un chef-server propio. Para aquellos que
+no tengan cuenta:
+<a href="http://www.opscode.com/">http://www.opscode.com/</a></p>
+
+<p>Una vez dentro hay que descargarse la clave privada del usuario elegido
+(user.pem), y también la clave la organización (organizaction.pem) que se usarán para realizar la subida contra nuestro repo privado de Chef en OpsCode.</p>
+
+<p>Hay que tener la gema instalada de nuevo:</p>
+
+<pre>
+gem install spiceweasel
+</pre>
+
+
+<p>Hay que modificar las opciones del servidor de Chef en el archivo "config.rb".
+Con los valores correctos de usuario / organización y teniendo las claves en el
+mismo directorio raiz del "chef-repo" procedemos a subirlos.</p>
 
 <pre><code class='bash'>
 pjimenez@pedro-pruebas:~/openstack-chef-repo$ spiceweasel infrastructure.yml | sh
@@ -130,6 +228,10 @@ Updated Role single-compute!
 Updated Role allinone!
 </code></pre>
 
+
+<p>Si visitamos ahora la parte de "CookBooks" desde nuestra cuenta podremos ver la
+lista de todos ellos, accesibles ahora de manera pública en OpsCode Hosted
+Chef.</p>
 ]]></content>
   </entry>
   
