@@ -4,7 +4,7 @@
   <title><![CDATA[Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2013-01-28T17:38:52+01:00</updated>
+  <updated>2013-01-28T17:52:14+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -71,9 +71,9 @@ fuente desde la que descargarlos/utilizarlos.</p>
 
 <p>Necesitamos instalarlo como gema:</p>
 
-<pre><code class='bash'>
+<pre>
 gem install librarian
-</code></pre>
+</pre>
 
 
 <p>Ahora entra en acción Librarian-Chef y su combinación con la estructura del
@@ -232,6 +232,9 @@ Updated Role allinone!
 <p>Si visitamos ahora la parte de &#8220;CookBooks&#8221; desde nuestra cuenta podremos ver la
 lista de todos ellos, accesibles ahora de manera pública en OpsCode Hosted
 Chef.</p>
+
+<blockquote><p>NOTA: nos queda pendiente aplicar además la parte de NODOS, aunque eso será
+para el próximo post, cuando además se haga con un servidor de Chef propio.</p></blockquote>
 ]]></content>
   </entry>
   
