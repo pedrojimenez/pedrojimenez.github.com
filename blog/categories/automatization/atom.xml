@@ -4,7 +4,7 @@
   <title><![CDATA[Category: automatization | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/automatization/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2013-01-28T18:03:00+01:00</updated>
+  <updated>2013-01-28T18:04:25+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -238,19 +238,18 @@ para el próximo post, cuando además se haga con un servidor de Chef propio.</p
 
 <p>NOTA2: Con la versión nueva de la gema de Spiceweasel hay una modficación, en el
 archivo de "infrastructure.yml", en la parte de los Cookbooks hay un cambio en
-la sintaxis:</p>
+la sintaxis:</p></blockquote>
 
-<blockquote><p>ANTES:
-- ntp: #used by base role
- - 1.2.0</p></blockquote>
+<pre>
+ ANTES:
+ - ntp: #used by base role
+  - 1.2.0
 
-<p>DESPUÉS:</p>
+ DESPUÉS:
+ - ntp: #used by base role
+  version: 1.2.0
+</pre>
 
-<blockquote><ul>
-<li>ntp: #used by base role
-version: 1.2.0</li>
-</ul>
-</blockquote></blockquote>
 ]]></content>
   </entry>
   
