@@ -4,7 +4,7 @@
   <title><![CDATA[Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2012-12-17T10:39:21+01:00</updated>
+  <updated>2013-01-28T16:54:48+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -12,6 +12,128 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Openstack Installation - librarian and spiceweasel  Part I - Hosted Chef]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/"/>
+    <updated>2013-01-28T12:58:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef</id>
+    <content type="html"><![CDATA[<center>
+<img align=center
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
+</center>
+
+
+
+
+<h2> **¿ Quiénes son ?**
+
+Hemos de detenernos un instante para hacer meción especial a las 2 maravillosas
+gemas que nos harán la vida muy sencilla con OpenStack. Hablamos de &#8220;librarian&#8221;
+y de &#8220;spiceweasel&#8221;. Para que la presentación sea bastante más oficial debemos
+considerar que librarian será nuestro &#8220;cazador de cookbooks&#8221; y que spiceweasel
+será el que los aplique contra el Servidor de Chef que elijamos, bien sea
+público o privado. Además SpiceWeasel se encargará de aplicar roles/cookbooks a
+los nodos directamente. Con esta pequeña &#8220;joya&#8221; se pueden hacer despliegues
+verdaderamente veloces.
+
+Librarian: 
+
+Librarian-Chef is a bundler for infrastructure repositories using Chef. You can
+use Librarian-Chef to resolve your infrastructure&#8217;s cookbook dependencies,
+fetch them, and install them into your infrastructure repository.
+
+Enlace: <https://github.com/applicationsonline/librarian>
+
+
+SpiceWeasel: 
+
+Provides a CLI tool for generating knife commands to build Chef-managed
+infrastructure from a simple JSON or YAML file.
+
+Enlace: <http://wiki.opscode.com/display/chef/Spiceweasel>
+
+<!-- more -->
+
+<h2.> **stalación**
+
+Así pues para poder automatizar tareas de instalación los utilizaremos a ambos.
+Por un parte 
+
+
+
+
+<pre><code class='bash'>
+pjimenez@pedro-pruebas:~/openstack-chef-repo$ spiceweasel infrastructure.yml | sh
+
+Uploading ntp          [1.2.0]
+Uploaded 1 cookbook.
+Uploading openssh        [1.1.0]
+Uploaded 1 cookbook.
+Uploading apt            [1.5.0]
+Uploaded 1 cookbook.
+Uploading yum            [1.0.0]
+Uploaded 1 cookbook.
+Uploading build-essential [1.1.2]
+Uploaded 1 cookbook.
+Uploading erlang         [1.1.0]
+Uploaded 1 cookbook.
+Uploading rabbitmq       [1.6.4]
+Uploaded 1 cookbook.
+Uploading openssl        [1.0.0]
+Uploaded 1 cookbook.
+Uploading mysql          [1.3.0]
+Uploaded 1 cookbook.
+Uploading postgresql     [1.0.0]
+Uploaded 1 cookbook.
+Uploading aws            [0.100.2]
+Uploaded 1 cookbook.
+Uploading xfs            [1.0.0]
+Uploaded 1 cookbook.
+Uploading database       [1.3.6]
+Uploaded 1 cookbook.
+Uploading apache2        [1.2.0]
+Uploaded 1 cookbook.
+Uploading selinux        [0.5.2]
+Uploaded 1 cookbook.
+Uploading sysctl         [0.1.2]
+Uploaded 1 cookbook.
+Uploading osops-utils    [1.0.6]
+Uploaded 1 cookbook.
+Uploading mysql-openstack [1.0.4]
+Uploaded 1 cookbook.
+Uploading rabbitmq-openstack [1.0.4]
+Uploaded 1 cookbook.
+Uploading keystone       [5.0.0]
+Uploaded 1 cookbook.
+Uploading glance         [5.0.0]
+Uploaded 1 cookbook.
+Uploading nova           [5.0.0]
+Uploaded 1 cookbook.
+Uploading horizon        [5.0.0]
+Uploaded 1 cookbook.
+Updated Environment production
+Updated Role base!
+Updated Role mysql-master!
+Updated Role rabbitmq-server!
+Updated Role keystone!
+Updated Role glance-api!
+Updated Role glance-registry!
+Updated Role glance!
+Updated Role nova-setup!
+Updated Role nova-scheduler!
+Updated Role nova-api-ec2!
+Updated Role nova-api-os-compute!
+Updated Role nova-volume!
+Updated Role nova-vncproxy!
+Updated Role horizon-server!
+Updated Role single-controller!
+Updated Role single-compute!
+Updated Role allinone!
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ubuntu python-keystoneclient Dependency Error]]></title>

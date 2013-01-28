@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Database Access Error in Folsom - Pedro Jiménez's Blog</title>
+  <title>Openstack Installation - librarian and spiceweasel  Part I - Hosted Chef - Pedro Jiménez's Blog</title>
   <meta name="author" content="Pedro Jiménez Solís">
 
   
-  <meta name="description" content="Después de darle muchas vueltas al asunto, el comodín que se utilizaba en Mysql 5.1 (versión usada Diablo and Essex) el conocido &#8220;%&#8221; ha &hellip;">
+  <meta name="description" content="<img align=center
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> **¿ Quiénes son ?** Hemos de detenernos un instante para hacer &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/">
+  <link rel="canonical" href="http://pedrojimenez.github.com/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -67,7 +68,7 @@
   
   <header>
     
-      <h1 class="entry-title">Database Access Error in Folsom</h1>
+      <h1 class="entry-title">Openstack Installation - Librarian and Spiceweasel Part I - Hosted Chef</h1>
     
     
       <p class="meta">
@@ -83,7 +84,7 @@
   
 
 
-<time datetime="2012-11-16T11:32:00+01:00" pubdate data-updated="true">Nov 16<span>th</span>, 2012</time>
+<time datetime="2013-01-28T12:58:00+01:00" pubdate data-updated="true">Jan 28<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -92,39 +93,119 @@
   </header>
 
 
-<div class="entry-content"><p>Después de darle muchas vueltas al asunto, el comodín que se utilizaba en Mysql 5.1 (versión usada Diablo and Essex) el conocido &#8220;%&#8221; ha comenzado a fallar. Nos encontramos con errores de acceso a las Bases de Datos que eran nuevos para mi hasta el momento. Revisando las bitácoras de instalaciones previas hemos visto que los permisos de acceso a las diferentes DataBases de Mysql han cambiado y se utiliza como única línea de permisos la siguiente:</p>
-
-<pre>
-mysql_database_user[keystone]: granting access with statement [GRANT all ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'onetimepassword']
-</pre>
-
-
-<p>Pero solamente con esta sentencia constatamos que el acceso desde otros nodos (multihost) nos daba error. Para solucionar estos problemas se ha probado a añadir sentencias extras de &#8220;GRANT&#8221; hasta que permitió dichas conexiones. Haciendo un resumen de todas ellas se ha modificado el cookbook de osops-utils para que añada una nueva sentencia de GRANT contra la dirección en la que se bindea el servicio de Mysql. De esta manera se podrá configurar el servicio de Base de Datos en HA y tener los accesos contra la &#8220;bind_address&#8221;.</p>
-
-<pre>
-Archivo "osops-utils/libraries/database.rb"
-
-        mysql_database_user username do
-          connection connection_info
-          password pw
-          database_name db_name
-          host "#{mysql_info["bind_address"]}"
-          privileges [:all]
-          action :grant
-        end
-</pre>
+<div class="entry-content"><center>
+<img align=center
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
+</center>
 
 
-<p>Se ha hecho un <em>Pull Request</em> a la gente de <em>Rcbops</em> con esta modificación.<a href="https://github.com/rcbops-cookbooks/osops-utils/pull/46#issuecomment-10194833">Enlace</a>.</p>
 
-<p>Ahora mismo lo estoy usando en nuestro Chef Server en el despligue de Folsom y funciona &#8220;like a charm&#8221;. Nos genera dos sentencias de permisos para cada servicio (keystone/glance/nova/horizon).</p>
 
-<pre>
-INFO: Processing mysql_database_user[keystone] action grant (keystone::server line 24)
-INFO: mysql_database_user[keystone]: granting access with statement [GRANT all ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'onetimepassword']
-INFO: Processing mysql_database_user[keystone] action grant (keystone::server line 32)
-INFO: mysql_database_user[keystone]: granting access with statement [GRANT all ON keystone.* TO 'keystone'@'172.16.172.4' IDENTIFIED BY 'onetimepassword']
-</pre>
+<h2> **¿ Quiénes son ?**
+
+Hemos de detenernos un instante para hacer meción especial a las 2 maravillosas
+gemas que nos harán la vida muy sencilla con OpenStack. Hablamos de &#8220;librarian&#8221;
+y de &#8220;spiceweasel&#8221;. Para que la presentación sea bastante más oficial debemos
+considerar que librarian será nuestro &#8220;cazador de cookbooks&#8221; y que spiceweasel
+será el que los aplique contra el Servidor de Chef que elijamos, bien sea
+público o privado. Además SpiceWeasel se encargará de aplicar roles/cookbooks a
+los nodos directamente. Con esta pequeña &#8220;joya&#8221; se pueden hacer despliegues
+verdaderamente veloces.
+
+Librarian: 
+
+Librarian-Chef is a bundler for infrastructure repositories using Chef. You can
+use Librarian-Chef to resolve your infrastructure&#8217;s cookbook dependencies,
+fetch them, and install them into your infrastructure repository.
+
+Enlace: <https://github.com/applicationsonline/librarian>
+
+
+SpiceWeasel: 
+
+Provides a CLI tool for generating knife commands to build Chef-managed
+infrastructure from a simple JSON or YAML file.
+
+Enlace: <http://wiki.opscode.com/display/chef/Spiceweasel>
+
+<!-- more -->
+
+<h2.> **stalación**
+
+Así pues para poder automatizar tareas de instalación los utilizaremos a ambos.
+Por un parte 
+
+
+
+
+<pre><code class='bash'>
+pjimenez@pedro-pruebas:~/openstack-chef-repo$ spiceweasel infrastructure.yml | sh
+
+Uploading ntp          [1.2.0]
+Uploaded 1 cookbook.
+Uploading openssh        [1.1.0]
+Uploaded 1 cookbook.
+Uploading apt            [1.5.0]
+Uploaded 1 cookbook.
+Uploading yum            [1.0.0]
+Uploaded 1 cookbook.
+Uploading build-essential [1.1.2]
+Uploaded 1 cookbook.
+Uploading erlang         [1.1.0]
+Uploaded 1 cookbook.
+Uploading rabbitmq       [1.6.4]
+Uploaded 1 cookbook.
+Uploading openssl        [1.0.0]
+Uploaded 1 cookbook.
+Uploading mysql          [1.3.0]
+Uploaded 1 cookbook.
+Uploading postgresql     [1.0.0]
+Uploaded 1 cookbook.
+Uploading aws            [0.100.2]
+Uploaded 1 cookbook.
+Uploading xfs            [1.0.0]
+Uploaded 1 cookbook.
+Uploading database       [1.3.6]
+Uploaded 1 cookbook.
+Uploading apache2        [1.2.0]
+Uploaded 1 cookbook.
+Uploading selinux        [0.5.2]
+Uploaded 1 cookbook.
+Uploading sysctl         [0.1.2]
+Uploaded 1 cookbook.
+Uploading osops-utils    [1.0.6]
+Uploaded 1 cookbook.
+Uploading mysql-openstack [1.0.4]
+Uploaded 1 cookbook.
+Uploading rabbitmq-openstack [1.0.4]
+Uploaded 1 cookbook.
+Uploading keystone       [5.0.0]
+Uploaded 1 cookbook.
+Uploading glance         [5.0.0]
+Uploaded 1 cookbook.
+Uploading nova           [5.0.0]
+Uploaded 1 cookbook.
+Uploading horizon        [5.0.0]
+Uploaded 1 cookbook.
+Updated Environment production
+Updated Role base!
+Updated Role mysql-master!
+Updated Role rabbitmq-server!
+Updated Role keystone!
+Updated Role glance-api!
+Updated Role glance-registry!
+Updated Role glance!
+Updated Role nova-setup!
+Updated Role nova-scheduler!
+Updated Role nova-api-ec2!
+Updated Role nova-api-os-compute!
+Updated Role nova-volume!
+Updated Role nova-vncproxy!
+Updated Role horizon-server!
+Updated Role single-controller!
+Updated Role single-compute!
+Updated Role allinone!
+</code></pre>
 
 </div>
 
@@ -148,12 +229,12 @@ INFO: mysql_database_user[keystone]: granting access with statement [GRANT all O
   
 
 
-<time datetime="2012-11-16T11:32:00+01:00" pubdate data-updated="true">Nov 16<span>th</span>, 2012</time>
+<time datetime="2013-01-28T12:58:00+01:00" pubdate data-updated="true">Jan 28<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/cookbooks/'>cookbooks</a>, <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/mysql/'>mysql</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a>
+    <a class='category' href='/blog/categories/automatization/'>automatization</a>, <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a>
   
 </span>
 
@@ -162,7 +243,7 @@ INFO: mysql_database_user[keystone]: granting access with statement [GRANT all O
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/" data-via="pjimenezsolis" data-counturl="http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pedrojimenez.github.com/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/" data-via="pjimenezsolis" data-counturl="http://pedrojimenez.github.com/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/" >Tweet</a>
   
   
   
@@ -171,10 +252,8 @@ INFO: mysql_database_user[keystone]: granting access with statement [GRANT all O
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/11/15/keystone-user-role-list-bug/" title="Previous Post: Keystone user-role-list bug">&laquo; Keystone user-role-list bug</a>
+        <a class="basic-alignment left" href="/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/" title="Previous Post: Ubuntu python-keystoneclient Dependency Error">&laquo; Ubuntu python-keystoneclient Dependency Error</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/12/05/cinder-volume-creation-error-in-folsom/" title="Next Post: Cinder: Volume Creation Error in Folsom">Cinder: Volume Creation Error in Folsom &raquo;</a>
       
     </p>
   </footer>
@@ -286,8 +365,8 @@ INFO: mysql_database_user[keystone]: granting access with statement [GRANT all O
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/';
-        var disqus_url = 'http://pedrojimenez.github.com/blog/2012/11/16/database-access-error-in-folsom/';
+        var disqus_identifier = 'http://pedrojimenez.github.com/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/';
+        var disqus_url = 'http://pedrojimenez.github.com/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/';
         var disqus_script = 'embed.js';
       
     (function () {
