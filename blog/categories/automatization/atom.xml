@@ -4,7 +4,7 @@
   <title><![CDATA[Category: automatization | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/automatization/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2013-01-29T15:20:10+01:00</updated>
+  <updated>2013-01-29T15:51:19+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -34,6 +34,9 @@ servidor de Chef via la gema de "knife-server".</p>
 <p>Será necesario tener un entorno RVM operativo y funcional. Para más información
 se puede ampliar desde aquí: <a href="https://rvm.io/rvm/install/">https://rvm.io/rvm/install/</a>. La verdad que no es
 el objetivo de este post explicar la instalación de dicho entorno.</p>
+
+<!-- more -->
+
 
 <p>Una vez realizado el <em>login</em> con el usuario del entorno RVM, pasaremos a la
 instalación de la Gema. En un primer paso nos ha dado un error y nos ha
