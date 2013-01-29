@@ -1,0 +1,430 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Installing a Private Chef Server via knife-server - Pedro Jiménez's Blog</title>
+  <meta name="author" content="Pedro Jiménez Solís">
+
+  
+  <meta name="description" content="<img align=center
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> Existen varias maneras de instalar un servidor de Chef privado, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://pedrojimenez.github.com/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Pedro Jiménez's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Pedro Jiménez's Blog</a></h1>
+  
+    <h2>Un blog de muchas inquietudes</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:pedrojimenez.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Installing a Private Chef Server via Knife-server</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-29T09:45:00+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><center>
+<img align=center
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
+</center>
+
+
+<p>Existen varias maneras de instalar un servidor de Chef privado, bien sea en una
+máquina virtual o física. Vamos a abordar una de ellas, la instalación del
+servidor de Chef via la gema de &#8220;knife-server&#8221;.</p>
+
+<p>Más información sobre instalaciones manuales de CHEF:
+<a href="http://wiki.opscode.com/display/chef/Installing+Chef+Server+Manually">http://wiki.opscode.com/display/chef/Installing+Chef+Server+Manually</a></p>
+
+<p>Será necesario tener un entorno RVM operativo y funcional. Para más información
+se puede ampliar desde aquí: <a href="https://rvm.io/rvm/install/">https://rvm.io/rvm/install/</a>. La verdad que no es
+el objetivo de este post explicar la instalación de dicho entorno.</p>
+
+<p>Una vez realizado el <em>login</em> con el usuario del entorno RVM, pasaremos a la
+instalación de la Gema. En un primer paso nos ha dado un error y nos ha
+informado que:</p>
+
+<pre>
+pjimenez@pedro-pruebas:~$ gem install knife-server
+Fetching: builder-3.1.4.gem (100%)
+Fetching: excon-0.16.10.gem (100%)
+Fetching: formatador-0.2.4.gem (100%)
+Fetching: multi_json-1.5.0.gem (100%)
+Fetching: net-scp-1.0.4.gem (100%)
+Fetching: nokogiri-1.5.6.gem (100%)
+Building native extensions.  This could take a while...
+ERROR:  Error installing knife-server:
+        ERROR: Failed to build gem native extension.
+
+            /home/pjimenez/.rvm/rubies/ruby-1.9.3-p374/bin/ruby extconf.rb
+            checking for libxml/parser.h... no
+            -----
+            libxml2 is missing.  please visit
+            http://nokogiri.org/tutorials/installing_nokogiri.html for help
+            with installing dependencies.
+            -----
+            *** extconf.rb failed ***
+</pre>
+
+
+<p>Siguiendo las instrucciones que nos aparecen en el enlace suministrado en el
+log, se instalan los paquetes que faltan.</p>
+
+<pre>
+$ sudo apt-get install libxslt-dev libxml2-dev
+</pre>
+
+
+<p>Repetimos después la parte de la Gema.</p>
+
+<pre>
+pjimenez@pedro-pruebas:~$ gem install knife-server
+Building native extensions.  This could take a while...
+Fetching: ruby-hmac-0.4.0.gem (100%)
+Fetching: fog-1.9.0.gem (100%)
+Fetching: knife-ec2-0.6.2.gem (100%)
+Fetching: knife-server-0.3.3.gem (100%)
+Successfully installed nokogiri-1.5.6
+Successfully installed ruby-hmac-0.4.0
+Successfully installed fog-1.9.0
+Successfully installed knife-ec2-0.6.2
+Successfully installed knife-server-0.3.3
+5 gems installed
+Installing ri documentation for nokogiri-1.5.6...
+Installing ri documentation for ruby-hmac-0.4.0...
+Installing ri documentation for fog-1.9.0...
+Installing ri documentation for knife-ec2-0.6.2...
+Installing ri documentation for knife-server-0.3.3...
+Installing RDoc documentation for nokogiri-1.5.6...
+Installing RDoc documentation for ruby-hmac-0.4.0...
+Installing RDoc documentation for fog-1.9.0...
+Installing RDoc documentation for knife-ec2-0.6.2...
+Installing RDoc documentation for knife-server-0.3.3...
+</pre>
+
+
+<p>Bien, primer reto conseguido. Ahora la parte mágica del asunto &#8230; la
+instalación desatendida del servidor de Chef.</p>
+
+<pre>
+pjimenez@pedro-pruebas:~$ knife server bootstrap standalone --ssh-user root
+--node-name chefpedro --host 192.168.1.64
+
+WARNING: No knife configuration file found
+WARNING: Failed to authenticate root - trying password auth
+Enter password for root@192.168.1.64: 
+Bootstrapping Chef on 192.168.1.64
+...
+</pre>
+
+
+<p>Vemos que se ha generado el certificado de Servidor (validation.pem) así como
+todos los archivos de configuración. Los clientes hay que crearlos aún.</p>
+
+<pre>
+root@chefpedro:/etc/chef# ll
+total 48
+drwxr-xr-x  4 chef chef 4096 ene 29 11:26 ./
+drwxr-xr-x 99 root root 4096 ene 29 11:26 ../
+drwx------  2 chef root 4096 ene 29 11:26 certificates/
+-rw-r-----  1 chef chef 3002 ene 29 11:25 client.rb
+-rw-r-----  1 chef chef 6296 ene 29 11:25 server.rb
+drwxr-xr-x  2 chef chef 4096 ene 29 11:25 solr-jetty/
+-rw-r-----  1 chef chef 2627 ene 29 11:25 solr.rb
+-rw-------  1 chef chef 1679 ene 29 11:25 validation.pem
+-rw-------  1 chef chef 1679 ene 29 11:25 webui.pem
+-rw-r-----  1 chef chef 4470 ene 29 11:26 webui.rb
+</pre>
+
+
+<p>Vemos las versiones de paquetería utilizadas actualmente.</p>
+
+<pre>
+root@chefpedro:/etc/chef# dpkg -l | grep chef
+ii  chef                                10.18.2-2                        A
+systems integration framework, built to bring the benefits of configuration
+management to your entire infrastructure.
+
+ii  chef-expander                       10.18.2-1                        A
+systems integration framework, built to bring the benefits of configuration
+management to your entire infrastructure.
+
+ii  chef-server                         10.18.2-1                        A
+meta-gem to install all server components of the Chef configuration management
+system
+
+ii  chef-server-api                     10.18.2-1                        A
+systems integration framework, built to bring the benefits of configuration
+management to your entire infrastructure.
+
+ii  chef-server-webui                   10.18.2-1                        A
+systems integration framework, built to bring the benefits of configuration
+management to your entire infrastructure.
+
+ii  chef-solr                           10.18.2-1
+Manages search indexes of Chef node attributes using SOLR
+</pre>
+
+
+<p>Ahora toca cacharrear con nuestro servidor &#8230; al navegador: <a href="http://chefpedro:4040">http://chefpedro:4040</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Pedro Jiménez Solís</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-29T09:45:00+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/automatization/'>automatization</a>, <a class='category' href='/blog/categories/chef/'>chef</a>, <a class='category' href='/blog/categories/folsom/'>folsom</a>, <a class='category' href='/blog/categories/openstack/'>openstack</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pedrojimenez.github.com/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/" data-via="pjimenezsolis" data-counturl="http://pedrojimenez.github.com/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/" title="Previous Post: Openstack Installation - librarian and spiceweasel  Part I - Hosted Chef">&laquo; Openstack Installation - librarian and spiceweasel  Part I - Hosted Chef</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/">Installing a Private Chef Server via knife-server</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/">Openstack Installation - librarian and spiceweasel  Part I - Hosted Chef</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/">Ubuntu python-keystoneclient Dependency Error</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/11/chef-bootstrapping-for-first-time/">Chef: Bootstrapping for first time</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/05/cinder-volume-creation-error-in-folsom/">Cinder: Volume Creation Error in Folsom</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/pedrojimenez">@pedrojimenez</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'pedrojimenez',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("pjimenezsolis", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/pjimenezsolis" class="twitter-follow-button" data-show-count="false">Follow @pjimenezsolis</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Pedro Jiménez Solís -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'myblog-pedrojimenez';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pedrojimenez.github.com/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/';
+        var disqus_url = 'http://pedrojimenez.github.com/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -10,7 +10,7 @@
 
   
   <meta name="description" content="<img align=center
-src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> ¿ Quiénes son ? Hemos de detenernos un instante para hacer &hellip;">
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> Existen varias maneras de instalar un servidor de Chef privado, &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,187 @@ src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> ¿ Quiénes so
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/">Installing a Private Chef Server via Knife-server</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-29T09:45:00+01:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><center>
+<img align=center
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
+</center>
+
+
+<p>Existen varias maneras de instalar un servidor de Chef privado, bien sea en una
+máquina virtual o física. Vamos a abordar una de ellas, la instalación del
+servidor de Chef via la gema de &#8220;knife-server&#8221;.</p>
+
+<p>Más información sobre instalaciones manuales de CHEF:
+<a href="http://wiki.opscode.com/display/chef/Installing+Chef+Server+Manually">http://wiki.opscode.com/display/chef/Installing+Chef+Server+Manually</a></p>
+
+<p>Será necesario tener un entorno RVM operativo y funcional. Para más información
+se puede ampliar desde aquí: <a href="https://rvm.io/rvm/install/">https://rvm.io/rvm/install/</a>. La verdad que no es
+el objetivo de este post explicar la instalación de dicho entorno.</p>
+
+<p>Una vez realizado el <em>login</em> con el usuario del entorno RVM, pasaremos a la
+instalación de la Gema. En un primer paso nos ha dado un error y nos ha
+informado que:</p>
+
+<pre>
+pjimenez@pedro-pruebas:~$ gem install knife-server
+Fetching: builder-3.1.4.gem (100%)
+Fetching: excon-0.16.10.gem (100%)
+Fetching: formatador-0.2.4.gem (100%)
+Fetching: multi_json-1.5.0.gem (100%)
+Fetching: net-scp-1.0.4.gem (100%)
+Fetching: nokogiri-1.5.6.gem (100%)
+Building native extensions.  This could take a while...
+ERROR:  Error installing knife-server:
+        ERROR: Failed to build gem native extension.
+
+            /home/pjimenez/.rvm/rubies/ruby-1.9.3-p374/bin/ruby extconf.rb
+            checking for libxml/parser.h... no
+            -----
+            libxml2 is missing.  please visit
+            http://nokogiri.org/tutorials/installing_nokogiri.html for help
+            with installing dependencies.
+            -----
+            *** extconf.rb failed ***
+</pre>
+
+
+<p>Siguiendo las instrucciones que nos aparecen en el enlace suministrado en el
+log, se instalan los paquetes que faltan.</p>
+
+<pre>
+$ sudo apt-get install libxslt-dev libxml2-dev
+</pre>
+
+
+<p>Repetimos después la parte de la Gema.</p>
+
+<pre>
+pjimenez@pedro-pruebas:~$ gem install knife-server
+Building native extensions.  This could take a while...
+Fetching: ruby-hmac-0.4.0.gem (100%)
+Fetching: fog-1.9.0.gem (100%)
+Fetching: knife-ec2-0.6.2.gem (100%)
+Fetching: knife-server-0.3.3.gem (100%)
+Successfully installed nokogiri-1.5.6
+Successfully installed ruby-hmac-0.4.0
+Successfully installed fog-1.9.0
+Successfully installed knife-ec2-0.6.2
+Successfully installed knife-server-0.3.3
+5 gems installed
+Installing ri documentation for nokogiri-1.5.6...
+Installing ri documentation for ruby-hmac-0.4.0...
+Installing ri documentation for fog-1.9.0...
+Installing ri documentation for knife-ec2-0.6.2...
+Installing ri documentation for knife-server-0.3.3...
+Installing RDoc documentation for nokogiri-1.5.6...
+Installing RDoc documentation for ruby-hmac-0.4.0...
+Installing RDoc documentation for fog-1.9.0...
+Installing RDoc documentation for knife-ec2-0.6.2...
+Installing RDoc documentation for knife-server-0.3.3...
+</pre>
+
+
+<p>Bien, primer reto conseguido. Ahora la parte mágica del asunto &#8230; la
+instalación desatendida del servidor de Chef.</p>
+
+<pre>
+pjimenez@pedro-pruebas:~$ knife server bootstrap standalone --ssh-user root
+--node-name chefpedro --host 192.168.1.64
+
+WARNING: No knife configuration file found
+WARNING: Failed to authenticate root - trying password auth
+Enter password for root@192.168.1.64: 
+Bootstrapping Chef on 192.168.1.64
+...
+</pre>
+
+
+<p>Vemos que se ha generado el certificado de Servidor (validation.pem) así como
+todos los archivos de configuración. Los clientes hay que crearlos aún.</p>
+
+<pre>
+root@chefpedro:/etc/chef# ll
+total 48
+drwxr-xr-x  4 chef chef 4096 ene 29 11:26 ./
+drwxr-xr-x 99 root root 4096 ene 29 11:26 ../
+drwx------  2 chef root 4096 ene 29 11:26 certificates/
+-rw-r-----  1 chef chef 3002 ene 29 11:25 client.rb
+-rw-r-----  1 chef chef 6296 ene 29 11:25 server.rb
+drwxr-xr-x  2 chef chef 4096 ene 29 11:25 solr-jetty/
+-rw-r-----  1 chef chef 2627 ene 29 11:25 solr.rb
+-rw-------  1 chef chef 1679 ene 29 11:25 validation.pem
+-rw-------  1 chef chef 1679 ene 29 11:25 webui.pem
+-rw-r-----  1 chef chef 4470 ene 29 11:26 webui.rb
+</pre>
+
+
+<p>Vemos las versiones de paquetería utilizadas actualmente.</p>
+
+<pre>
+root@chefpedro:/etc/chef# dpkg -l | grep chef
+ii  chef                                10.18.2-2                        A
+systems integration framework, built to bring the benefits of configuration
+management to your entire infrastructure.
+
+ii  chef-expander                       10.18.2-1                        A
+systems integration framework, built to bring the benefits of configuration
+management to your entire infrastructure.
+
+ii  chef-server                         10.18.2-1                        A
+meta-gem to install all server components of the Chef configuration management
+system
+
+ii  chef-server-api                     10.18.2-1                        A
+systems integration framework, built to bring the benefits of configuration
+management to your entire infrastructure.
+
+ii  chef-server-webui                   10.18.2-1                        A
+systems integration framework, built to bring the benefits of configuration
+management to your entire infrastructure.
+
+ii  chef-solr                           10.18.2-1
+Manages search indexes of Chef node attributes using SOLR
+</pre>
+
+
+<p>Ahora toca cacharrear con nuestro servidor &#8230; al navegador: <a href="http://chefpedro:4040">http://chefpedro:4040</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -652,6 +833,10 @@ root@controller:~# nova --no_cache volume-list
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/">Installing a Private Chef Server via knife-server</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/">Openstack Installation - librarian and spiceweasel  Part I - Hosted Chef</a>
       </li>
     
@@ -665,10 +850,6 @@ root@controller:~# nova --no_cache volume-list
     
       <li class="post">
         <a href="/blog/2012/12/05/cinder-volume-creation-error-in-folsom/">Cinder: Volume Creation Error in Folsom</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/16/database-access-error-in-folsom/">Database Access Error in Folsom</a>
       </li>
     
   </ul>
