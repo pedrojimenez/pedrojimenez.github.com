@@ -4,7 +4,7 @@
   <title><![CDATA[Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2013-01-29T15:51:19+01:00</updated>
+  <updated>2013-02-05T10:56:39+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -12,6 +12,302 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Openstack Installation - librarian and spiceweasel  Part II - Private Chef Server]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2013/01/31/openstack-installation-librarian-and-spiceweasel-part-ii-private-chef-server/"/>
+    <updated>2013-01-31T11:02:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2013/01/31/openstack-installation-librarian-and-spiceweasel-part-ii-private-chef-server</id>
+    <content type="html"><![CDATA[<center>
+<img align=center
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
+</center>
+
+
+<br />
+
+
+<h2>Eligiendo Servidor</h2>
+
+
+<p>Como ya vimos en el post previo a este, hay una manera muy sencilla de instalar
+un servidor de Chef mediante una Gema de Ruby, knife-server.</p>
+
+<p>Ver: <a href="http://pedrojimenez.github.com/blog/2013/01/29/installing-a-private-chef-server-via-knife-server">http://pedrojimenez.github.com/blog/2013/01/29/installing-a-private-chef-server-via-knife-server</a></p>
+
+<p>Nuestro objetivo real ahora mismo es realizar el despliegue de <strong>OpenStack</strong>, por
+tanto cada cual deberá decidir cómo quiere instalarse el servidor propio de
+Chef. Si es necesaria más información, se puede revisar la documentación
+oficial de la gente de OpsCode.</p>
+
+<p>Instalación: <a href="http://private-chef-docs.opscode.com/installation.html">http://private-chef-docs.opscode.com/installation.html</a></p>
+
+<!-- more -->
+
+
+<p>Continuamos entonces con el supuesto de tener ya nuestro Chef Server corriendo.
+Ahora vamos a practicar magia, hagamos currar a nuestras herramientas.</p>
+
+<h2>Librarian</h2>
+
+
+<p>Por descontado que la parte de &#8220;librarian&#8221; es sencilla de manejar, tan solo
+resta la decisión de qué cookbooks se quieren utilizar en nuestra
+instalación. Los cookbooks genéricos se cogen de los recursos públicos de la comunidad de  OpsCode.</p>
+
+<p>Cookbooks: <a href="http://community.opscode.com/cookbooks">http://community.opscode.com/cookbooks</a></p>
+
+<blockquote><p>Desde aquí un agradecimiento especial a toda la gente que de manera pública o
+privada contribuyen a tener un repositorio tan extenso de cookbooks.</p></blockquote>
+
+<p>Sin embargo para la parte de los cookbooks de OpenStack hay mucha gente
+contribuyendo a los públicos de OpsCode y/o desarrollando suyos propios.
+Nuestro Chef Server y la infraestructura Cloud son tan flexible que nos da la
+opción de elegir qué cookbooks queremos (o podéis hacer FORK de la parte de
+GitHub y empezar vuestras aportaciones).</p>
+
+<p>En nuestro caso utilizamos una mezcla entre la gente de RackSpace (rcbops), la
+parte pública de OpsCode y otro subconjunto de cookbooks que hemos clonado y
+usamos desde nuetro repositorio de Git (sea GitLAb o GitHub - Gracias @Sfrek).</p>
+
+<p>Una vez instalada la gema ( ver post <a href="http://pedrojimenez.github.com/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/">anterior</a> ) y con todos los cookbooks elegidos y cargados en nuestro <strong>Cheffile</strong> vamos a realizar la descarga de ellos dentro nuestro &#8220;openstack-chef-repo&#8221;.</p>
+
+<pre>
+cd src
+git clone ssh://git@code.abadasoft.com:22822/openstack_chef_repo.git
+
+librarian-chef update
+</pre>
+
+
+<p>Si todo está correctamente configurado , nos generaría una salida como ésta:</p>
+
+<pre>
+pjimenez@pedro-pruebas:~/openstack-chef-repo$ librarian-chef update
+Installing apache2 (1.2.0)
+Installing apt (1.5.0)
+Installing aws (0.100.2)
+Installing build-essential (1.1.2)
+Installing openssl (1.0.0)
+Installing mysql (1.3.0)
+Installing postgresql (1.0.0)
+Installing xfs (1.0.0)
+Installing database (1.3.6)
+Installing yum (1.0.0)
+Installing erlang (1.1.0)
+Installing ntp (1.2.0)
+Installing openssh (1.1.0)
+Installing rabbitmq (1.6.4)
+Installing rsyslog (1.5.0)
+Installing selinux (0.5.2)
+Installing sysctl (0.1.0)
+Installing osops-utils (1.0.12)
+Installing keepalived (1.0.2)
+Installing rabbitmq-openstack (1.0.9)
+Installing collectd (1.0.12)
+Installing monit (1.0.12)
+Installing monitoring (0.0.12)
+Installing keystone (1.0.15)
+Installing glance (1.0.15)
+Installing horizon (1.0.12)
+Installing mysql-openstack (1.0.10)
+Installing cinder (0.0.6)
+Installing dsh (0.0.14)
+Installing nova (1.0.17)
+Installing nova-network (1.0.16)
+</pre>
+
+
+<p><strong>Contenido del Cheffile</strong>:</p>
+
+<pre>
+#!/usr/bin/env ruby
+#^syntax detection
+
+site 'http://community.opscode.com/api/v1'
+
+cookbook 'ntp', '1.2.0'
+cookbook 'openssh', '1.1.0'
+cookbook 'apt', '1.5.0'
+cookbook 'yum', '1.0.0'
+cookbook 'build-essential', '1.1.2'
+cookbook 'erlang', '1.1.0'
+cookbook 'openssl', '1.0.0'
+cookbook 'postgresql', '1.0.0'
+cookbook 'aws', '0.100.2'
+cookbook 'xfs', '1.0.0'
+cookbook 'database', '1.3.6'
+cookbook 'mysql', '1.3.0'
+cookbook 'rabbitmq', '1.6.4'
+cookbook 'apache2', '1.2.0'
+cookbook 'selinux', '0.5.2'
+cookbook 'rsyslog'
+
+cookbook 'sysctl',
+  :git => 'https://github.com/mattray/sysctl.git'
+cookbook 'keepalived',
+  :git => 'https://github.com/rcbops-cookbooks/keepalived.git'
+cookbook 'monit',
+  :git => 'https://github.com/rcbops-cookbooks/monit.git'
+cookbook 'monitoring',
+  :git => 'https://github.com/rcbops-cookbooks/monitoring.git'
+cookbook 'dsh',
+  :git => 'https://github.com/rcbops-cookbooks/dsh.git'
+cookbook 'osops-utils',
+  :git => 'git://github.com/Abadasoft/osops-utils.git'
+cookbook 'rabbitmq-openstack',
+  :git => 'git://github.com/Abadasoft/rabbitmq-openstack.git'
+cookbook 'collectd',
+  :git => 'ssh://git@code.abadasoft.com:22822/pjimenez/collectd.git',
+  :ref => 'testing'
+cookbook 'mysql-openstack',
+  :git => 'https://github.com/Abadasoft/mysql-openstack.git'
+cookbook 'keystone',
+  :git => 'https://github.com/Abadasoft/keystone.git'
+cookbook 'glance',
+  :git => 'https://github.com/Abadasoft/glance.git'
+cookbook 'nova',
+  :git => 'ssh://git@code.abadasoft.com:22822/nova.git',
+  :ref => 'testing'
+cookbook 'horizon',
+  :git => 'https://github.com/Abadasoft/horizon.git'
+cookbook 'nova-network',
+  :git => 'https://github.com/Abadasoft/nova-network.git'
+cookbook 'cinder',
+  :git => 'ssh://git@code.abadasoft.com:22822/cinder.git'
+</pre>
+
+
+
+
+<h2>SpiceWeasel</h2>
+
+
+<p>Bien, repasemos nuestro estado. Tenemos un &#8220;openstack-chef-repo&#8221; clonado desde
+GiT, hemos rellenado el fichero de librarian (Cheffile) con los cookbooks
+elegidos, hemos ejecutado librarian y se handescargado dentro del directorio
+&#8220;cookbooks&#8221; todas las recetas elegidas.</p>
+
+<p>Ahora vamos a comenzar el despliegue, lo primero que necesitamos al igual que
+en el paso del Servidor Hosted de Chef es configurar los parámetros de conexión
+contra el servidor de Chef elegido. Al ser un servidor privado los parámetros
+deben cambiar (ver archivo config.rb con las instrucciones).</p>
+
+<p>En nuestro servidor de Chef ahora mismo está como cliente (y Admin) el usuario
+<strong>pjimenez</strong>, ahora necesitamos crear otro nuevo: <strong>pjimenez-validator</strong> y darle
+permisos de admin. Copiamos la clave privada que se genere a un fichero .pem
+dentro del directorio:</p>
+
+<pre>
+openstack-chef-repo
+|
+\ _ validation.pem (clave del servidor de chef).
+\ _ pjimenez-validator.pem (clave de usuario creada).
+</pre>
+
+
+<p>Seguimos los pasos del fichero de configuración y rellenamos con los valores
+necesarios (file: config.rb)</p>
+
+<pre>
+# Setup steps with own chef server:
+# 1. Change chef server URL
+# 2. Create a chef client with <somename>-validator
+# 3. Put <somename>-validator.pem in this directory
+# 4. change "chef_organization" to <somename>
+self.chef_organization = "pjimenez"
+self.chef_url = "http://192.168.1.64:4000"
+</pre>
+
+
+<p>En nuestro ejemplo se ha creado un entorno de pruebas <strong>folsom-pre</strong> y se ha
+generado su archivo <strong>folsom-pre.rb</strong> dentro del directorio environments.</p>
+
+<p>Los roles que se van a utilizar son los que están publicados en el repositorio
+oficial de Opscode: <a href="https://github.com/opscode/openstack-chef-repo">https://github.com/opscode/openstack-chef-repo</a>.</p>
+
+<p>Nos falta rellenar el archivo principal de Spiceweasel: <strong>infraestructure.yml</strong></p>
+
+<pre>
+cookbooks:
+- ntp: #used by base role
+- openssh: #used by base role
+- apt: #used by erlang
+- yum: #used by erlang
+- build-essential: # used by mysql
+- rsyslog:
+- erlang: #used by rabbitmq-server role
+- rabbitmq: #used by rabbitmq-server role
+- openssl: #used by mysql
+- mysql: #used by mysql-master role
+- postgresql: #required by database
+- aws: #required by database
+- xfs: #required by database
+- database: #required by keystone
+- monitoring: #used by horizon-server role
+- apache2: #required by horizon
+- selinux: #required by nova
+- sysctl: #required by nova
+- osops-utils: #required by keystone
+- mysql-openstack: #required by keystone
+- rabbitmq-openstack: #required by keystone
+- cinder: #used by horizon-server role
+- keystone: #used by keystone role
+- glance: #used by glance roles
+- nova: #used by nova roles
+- nova-network: #used by nova roles
+- horizon: #used by horizon-server role
+- keepalived: #used by horizon-server role
+- dsh: #used by horizon-server role
+- monit: #used by horizon-server role
+- collectd: #used by horizon-server role
+
+environments:
+- folsom_pre:
+
+data bags:
+
+roles:
+  - base:
+  - mysql-master:
+  - rabbitmq-server:
+  - keystone:
+  - glance-api:
+  - glance-registry:
+  - glance:
+  - nova-setup:
+  - nova-scheduler:
+  - nova-api-ec2:
+  - nova-api-os-compute:
+  - nova-volume:
+  - nova-vncproxy:
+  - horizon-server:
+  - single-controller:
+  - single-compute:
+  - allinone:
+nodes:
+- folsom-aio:
+  run_list: role[base] role[allinone]
+  options: -x root -P onetimepassword -E folsom_pre
+</pre>
+
+
+<p>Por fin &#8230; nos acercamos al momento estrella &#8230; Vamos a desplegar un entorno
+completo con una máquina que hará de AllinOne:</p>
+
+<pre>
+spiceweasel infraestructure.yml | sh
+</pre>
+
+
+<blockquote><p>NOTAS:
+La máquina que hará de allinone (folsom-aio) está resuelta en /etc/hosts.
+Esta máquina sólo tiene instalado el Sistema Operativo y configurada la red.</p></blockquote>
+
+<p>En unos minutos podréis acceder a la instalación completa de Openstack a través
+del navegador: <a href="http://&lt;folsom-aio-ip">http://&lt;folsom-aio-ip</a>></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Installing a Private Chef Server via knife-server]]></title>
@@ -236,7 +532,7 @@ chef-repo oficial de OpsCode. Como primer paso necesitamos descargar dicho
 repositorio desde GiT.</p>
 
 <pre>
-git clone https://www.github.com/cloudbau/openstack-chef-repo.get
+git clone https://www.github.com/cloudbau/openstack-chef-repo.git
 </pre>
 
 
