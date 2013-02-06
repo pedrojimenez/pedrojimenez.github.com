@@ -10,7 +10,7 @@
 
   
   <meta name="description" content="<img align=center
-src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> Eligiendo Servidor Como ya vimos en el post previo a este, hay &hellip;">
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> Chef: Logs después de realizar un BootStrap Ya hemos visto en &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,93 @@ src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> Eligiendo Serv
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/06/appendix-chef-client-log-configuration-after-bootstrap/">Appendix: Chef-client Log Configuration After Bootstrap</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-06T11:19:00+01:00" pubdate data-updated="true">Feb 6<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/06/appendix-chef-client-log-configuration-after-bootstrap/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><center>
+<img align=center
+src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg">
+</center>
+
+
+<br />
+
+
+
+
+<h2>Chef: Logs después de realizar un BootStrap</h2>
+
+
+<p>Ya hemos visto en post anteriores como realizar la instalación de OpenStack
+bien con un servidor de [Chef Hosted] bien con un servidor [Chef Privado].
+También se realizó un post sobre la instalación de un Servidor de Chef Privado
+a través de una gema de Ruby
+<a href="http://pedrojimenez.github.com/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/">knife-server</a>.</p>
+
+<p>Bien, a la hora de depurar errores en cada ejecución del cliente de Chef la
+salida está configurada por defecto para que lo haga en <strong>STDOUT</strong>. Sin embargo
+en las instalaciones por paquetería de <strong>chef-client</strong> esta configuración se
+sobreescribe con el valor que se especifique en <strong>/etc/default/chef-client</strong>,
+que en nuestro caso será <strong>/var/log/chef/chef-client.log</strong>.</p>
+
+<p>Valores por paquetería de /etc/chef/clint.rb</p>
+
+<pre>
+log_level          :info
+log_location       STDOUT
+</pre>
+
+
+<p>Valores por paquetería de /etc/default/chef-client</p>
+
+<pre>
+LOGFILE=/var/log/chef/client.log
+CONFIG=/etc/chef/client.rb
+INTERVAL=1800
+SPLAY=20
+</pre>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/06/appendix-chef-client-log-configuration-after-bootstrap/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -722,47 +809,9 @@ root@controller:~# nova --no_cache volume-list
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/31/primeros-pasos/">Primeros Pasos</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-31T12:03:00+01:00" pubdate data-updated="true">Oct 31<span>st</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/31/primeros-pasos/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Bueno por fin me he decidido a escribir algo de todo lo que hago y parte de lo que leo. He valorado un montón de opciones previas pero creo que Octopress se adapta perfectamente a mis necesidades. Es por supuesto software libre y como ya hemos visto desplegable dentro de una infraestructura PaaS.</p>
-
-<p>Gracias a @achilued y a @Sfrek por el apoyo y los ánimos. Espero darle la vidilla que se merece ;)</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -773,6 +822,10 @@ root@controller:~# nova --no_cache volume-list
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/02/06/appendix-chef-client-log-configuration-after-bootstrap/">Appendix: Chef-client log configuration after Bootstrap</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/01/31/openstack-installation-librarian-and-spiceweasel-part-ii-private-chef-server/">Openstack Installation - librarian and spiceweasel  Part II - Private Chef Server</a>
@@ -788,10 +841,6 @@ root@controller:~# nova --no_cache volume-list
     
       <li class="post">
         <a href="/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/">Ubuntu python-keystoneclient Dependency Error</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/11/chef-bootstrapping-for-first-time/">Chef: Bootstrapping for first time</a>
       </li>
     
   </ul>
