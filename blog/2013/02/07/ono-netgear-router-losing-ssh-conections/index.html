@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Pedro Jiménez's Blog</title>
+  <title>ONO Netgear Router: Losing SSH conections - Pedro Jiménez's Blog</title>
   <meta name="author" content="Pedro Jiménez Solís">
 
   
-  <meta name="description" content="Pues después de varios intentos con la infraestructura de Folsom, al final en todas ellas he conseguido llegar a este punto de error. Después de leer &hellip;">
+  <meta name="description" content="<img align=center
+src="http://topjailbreakapps.info/wp-content/uploads/2010/02/SSH1.jpg"> Problemática Nos hemos mudado a una nueva oficina y &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://pedrojimenez.github.com/blog/page/2/">
+  <link rel="canonical" href="http://pedrojimenez.github.com/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -62,15 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/">Ubuntu Keyring Password and Folsom</a></h1>
+      <h1 class="entry-title">ONO Netgear Router: Losing SSH Conections</h1>
     
     
       <p class="meta">
@@ -86,75 +84,88 @@
   
 
 
-<time datetime="2012-11-15T11:16:00+01:00" pubdate data-updated="true">Nov 15<span>th</span>, 2012</time>
+<time datetime="2013-02-07T10:53:00+01:00" pubdate data-updated="true">Feb 7<span>th</span>, 2013</time>
         
-         | <a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/#disqus_thread">Comments</a>
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Pues después de varios intentos con la infraestructura de Folsom, al final en todas ellas he conseguido llegar a este punto de error. Después de leer por ahí, la solución es bastante sencilla y se aplica de manea instantánea sobre línea de comandos.</p>
+<div class="entry-content"><center>
+<img align=center
+src="http://topjailbreakapps.info/wp-content/uploads/2010/02/SSH1.jpg">
+</center>
 
-<p>Este error nos salta cuando tratamos de invocar los comandos de &#8220;nova&#8221; después de haber generado y cargado las variables de entorno en el fichero novarc (o el nombre que elijamos).</p>
+
+
+
+<h2>Problemática</h2>
+
+
+<p>Nos hemos mudado a una nueva oficina y tenemos la suerte de haber contratado
+ONO 100 MB. La verdad que como línea de comunicaciones es excepcional. Pero
+mientras trabajamos nos hemos encontrado con un problemilla de comunicaciones a
+la hora de mantener las sesiones SSH activas.</p>
+
+<p>Como casi todas las empresas TIC, nosotros tenenos servidores externos para
+varios usos. El caso es que el equipo de Sistemas suele tener varias &#8220;consolas&#8221;
+abiertas con múltiples conexiones <strong>SSH</strong>.</p>
+
+<p>Antes de tener contratado <strong>ONO</strong> la verdad que no se nos cortaba la conexión
+de dichas sesiones, pero ahora mismo no podemos dejarlas sin actividad más de
+unos pocos minutos. Para poder mantener las sesiones abiertas deberemos
+realizar algunos cambios o bien en la parte del Server o bien en la parte de
+Cliente.</p>
+
+<!-- more -->
+
+
+
+
+<h3>Parte Cliente</h3>
+
+
+<p>Usamos OpenSSH en todos nuestros equipos, así que la modificación es sencilla. Editamos <strong>.ssh/config</strong> (o /etc/ssh/ssh_config) y añadimos:</p>
 
 <pre>
-root@controller:~# nova list
-Please set a password for your new keyring
+ServerAliveInterval 30
+ServerAliveCountMax 60
 </pre>
 
 
-<p>Aunque metamos una contraseña, nos seguirá molestando con este error de manera continuada. Para evitarlo basta con añadir la línea de abajo al bashrc del usuario y volver a cargarlo.</p>
+<p>Esto establecerá que el cliente enviará un mensaje de
+mantenimiento de la conexión cada 30 segundos al
+servidor, por lo que el NAT ya no lo considerará una
+conexión inactiva. Y el segundo parámetro indicará que
+se haga esto hasta 100 veces mientras no haya actividad
+(30*60 = 1800s = 30 minutos).</p>
+
+<h3>Parte Servidor</h3>
+
+
+<p>Editamos el fichero <strong>/etc/ssh/sshd_config</strong> (puede estar en
+otro sitio, dependiendo de la distribución de Linux) y añadimos al final:</p>
 
 <pre>
-Añadimos al /home/user/.bashrc y recargamos
-export OS_NO_CACHE=1
-source /home/user/.bashrc 
+ClientAliveInterval 30
+ClientAliveCountMax 60
 </pre>
 
 
-<p>Comprobamos que se ejecutan los comandos de &#8220;nova&#8221;:</p>
 
-<pre>
-root@controller:/etc/nova# nova volume-list
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-| ID                                   | Status    | Display Name    | Size | Volume Type | Attached to |
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-| 850e5d38-dc87-4267-b3c9-9d02205f11ab | available | MiPrimerVolumen | 3    | None        |             |
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-</pre>
-
-
-<p>La segunda opción es ejecutar los comandos de &#8220;nova&#8221; con la opción <u>&#8211;no_cache</u>, aunque sobre el mismo entorno no he sido capaz de que funcione con dichas indicaciones.</p>
-
-<pre>
-root@controller:~# nova --no_cache volume-list
-</pre>
-
-
-<p>Enlaces:</p>
-
-<p><a href="https://bugs.launchpad.net/python-novaclient/+bug/1020238">https://bugs.launchpad.net/python-novaclient/+bug/1020238</a></p>
-
-<p><a href="https://lists.launchpad.net/openstack/msg16095.html">https://lists.launchpad.net/openstack/msg16095.html</a> (solución de Vish)</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/31/primeros-pasos/">Primeros Pasos</a></h1>
-    
-    
-      <p class="meta">
-        
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Pedro Jiménez Solís</span></span>
+
+      
 
 
 
@@ -166,33 +177,44 @@ root@controller:~# nova --no_cache volume-list
   
 
 
-<time datetime="2012-10-31T12:03:00+01:00" pubdate data-updated="true">Oct 31<span>st</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/31/primeros-pasos/#disqus_thread">Comments</a>
-        
-      </p>
+<time datetime="2013-02-07T10:53:00+01:00" pubdate data-updated="true">Feb 7<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ono/'>ONO</a>, <a class='category' href='/blog/categories/comunicaciones/'>comunicaciones</a>, <a class='category' href='/blog/categories/ssh/'>ssh</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>Bueno por fin me he decidido a escribir algo de todo lo que hago y parte de lo que leo. He valorado un montón de opciones previas pero creo que Octopress se adapta perfectamente a mis necesidades. Es por supuesto software libre y como ya hemos visto desplegable dentro de una infraestructura PaaS.</p>
-
-<p>Gracias a @achilued y a @Sfrek por el apoyo y los ánimos. Espero darle la vidilla que se merece ;)</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://pedrojimenez.github.com/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/" data-via="pjimenezsolis" data-counturl="http://pedrojimenez.github.com/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/06/appendix-chef-client-log-configuration-after-bootstrap/" title="Previous Post: Appendix: Chef-client log configuration after Bootstrap">&laquo; Appendix: Chef-client log configuration after Bootstrap</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-    <a class="next" href="/">Newer &rarr;</a>
-    
-  </div>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -225,7 +247,7 @@ root@controller:~# nova --no_cache volume-list
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/pedrojimenez">@pedrojimenez</a> on GitHub
@@ -255,7 +277,7 @@ root@controller:~# nova --no_cache volume-list
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -275,6 +297,7 @@ root@controller:~# nova --no_cache volume-list
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -289,7 +312,10 @@ root@controller:~# nova --no_cache volume-list
       var disqus_shortname = 'myblog-pedrojimenez';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://pedrojimenez.github.com/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/';
+        var disqus_url = 'http://pedrojimenez.github.com/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

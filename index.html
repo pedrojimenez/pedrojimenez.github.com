@@ -10,7 +10,7 @@
 
   
   <meta name="description" content="<img align=center
-src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> Chef: Logs después de realizar un BootStrap Ya hemos visto en &hellip;">
+src="http://topjailbreakapps.info/wp-content/uploads/2010/02/SSH1.jpg"> Problemática Nos hemos mudado a una nueva oficina y &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,73 @@ src="http://docs.opscode.com/_static/opscode_chef_html_logo.jpg"> Chef: Logs des
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/">ONO Netgear Router: Losing SSH Conections</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-07T10:53:00+01:00" pubdate data-updated="true">Feb 7<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><center>
+<img align=center
+src="http://topjailbreakapps.info/wp-content/uploads/2010/02/SSH1.jpg">
+</center>
+
+
+
+
+<h2>Problemática</h2>
+
+
+<p>Nos hemos mudado a una nueva oficina y tenemos la suerte de haber contratado
+ONO 100 MB. La verdad que como línea de comunicaciones es excepcional. Pero
+mientras trabajamos nos hemos encontrado con un problemilla de comunicaciones a
+la hora de mantener las sesiones SSH activas.</p>
+
+<p>Como casi todas las empresas TIC, nosotros tenenos servidores externos para
+varios usos. El caso es que el equipo de Sistemas suele tener varias &#8220;consolas&#8221;
+abiertas con múltiples conexiones <strong>SSH</strong>.</p>
+
+<p>Antes de tener contratado <strong>ONO</strong> la verdad que no se nos cortaba la conexión
+de dichas sesiones, pero ahora mismo no podemos dejarlas sin actividad más de
+unos pocos minutos. Para poder mantener las sesiones abiertas deberemos
+realizar algunos cambios o bien en la parte del Server o bien en la parte de
+Cliente.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -729,86 +796,6 @@ keystone user-role-list
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/">Ubuntu Keyring Password and Folsom</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-15T11:16:00+01:00" pubdate data-updated="true">Nov 15<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/11/15/ubuntu-keyring-password-and-folsom/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Pues después de varios intentos con la infraestructura de Folsom, al final en todas ellas he conseguido llegar a este punto de error. Después de leer por ahí, la solución es bastante sencilla y se aplica de manea instantánea sobre línea de comandos.</p>
-
-<p>Este error nos salta cuando tratamos de invocar los comandos de &#8220;nova&#8221; después de haber generado y cargado las variables de entorno en el fichero novarc (o el nombre que elijamos).</p>
-
-<pre>
-root@controller:~# nova list
-Please set a password for your new keyring
-</pre>
-
-
-<p>Aunque metamos una contraseña, nos seguirá molestando con este error de manera continuada. Para evitarlo basta con añadir la línea de abajo al bashrc del usuario y volver a cargarlo.</p>
-
-<pre>
-Añadimos al /home/user/.bashrc y recargamos
-export OS_NO_CACHE=1
-source /home/user/.bashrc 
-</pre>
-
-
-<p>Comprobamos que se ejecutan los comandos de &#8220;nova&#8221;:</p>
-
-<pre>
-root@controller:/etc/nova# nova volume-list
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-| ID                                   | Status    | Display Name    | Size | Volume Type | Attached to |
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-| 850e5d38-dc87-4267-b3c9-9d02205f11ab | available | MiPrimerVolumen | 3    | None        |             |
-+--------------------------------------+-----------+-----------------+------+-------------+-------------+
-</pre>
-
-
-<p>La segunda opción es ejecutar los comandos de &#8220;nova&#8221; con la opción <u>&#8211;no_cache</u>, aunque sobre el mismo entorno no he sido capaz de que funcione con dichas indicaciones.</p>
-
-<pre>
-root@controller:~# nova --no_cache volume-list
-</pre>
-
-
-<p>Enlaces:</p>
-
-<p><a href="https://bugs.launchpad.net/python-novaclient/+bug/1020238">https://bugs.launchpad.net/python-novaclient/+bug/1020238</a></p>
-
-<p><a href="https://lists.launchpad.net/openstack/msg16095.html">https://lists.launchpad.net/openstack/msg16095.html</a> (solución de Vish)</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -824,6 +811,10 @@ root@controller:~# nova --no_cache volume-list
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/">ONO Netgear Router: Losing SSH conections</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/02/06/appendix-chef-client-log-configuration-after-bootstrap/">Appendix: Chef-client log configuration after Bootstrap</a>
       </li>
     
@@ -837,10 +828,6 @@ root@controller:~# nova --no_cache volume-list
     
       <li class="post">
         <a href="/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/">Openstack Installation - librarian and spiceweasel  Part I - Hosted Chef</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/">Ubuntu python-keystoneclient Dependency Error</a>
       </li>
     
   </ul>
