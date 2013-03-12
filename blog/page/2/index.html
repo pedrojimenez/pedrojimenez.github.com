@@ -9,7 +9,7 @@
   <meta name="author" content="Pedro Jiménez Solís">
 
   
-  <meta name="description" content="Pues después de varios intentos con la infraestructura de Folsom, al final en todas ellas he conseguido llegar a este punto de error. Después de leer &hellip;">
+  <meta name="description" content="Depurando el comportamiento de Keystone para solventar un error que me trae de cabeza en Glance, he visto que un nuevos comandos que se han añadido &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,93 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/15/keystone-user-role-list-bug/">Keystone User-role-list Bug</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-15T15:02:00+01:00" pubdate data-updated="true">Nov 15<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/11/15/keystone-user-role-list-bug/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Depurando el comportamiento de Keystone para solventar un error que me trae de cabeza en Glance, he visto que un nuevos comandos que se han añadido al servicio de Identidad en OpenStack (&#8220;keystone user-role-list&#8221;). Este comando nos permitirá extraer un listado de los usuarios/roles/tenants de un solo vistazo.</p>
+
+<p>Problema: que ahora mismo no funciona como se espera. Tan solo muestra el listado de los roles que hay para el usurio que tenemos en las variables de entorno (cargadas en el fichero novarc o como queramos llamarlo). Necesitaba conocer dicho listado del usuario &#8220;glance&#8221; no del usuario &#8220;admin&#8221;. En una primera pasada vemos que el listado solamente nos permite obtener los del mismo usuario &#8220;admin&#8221;:</p>
+
+<pre>
+keystone role-list
++----------------------------------+----------------------+
+|                id                |         name         |
++----------------------------------+----------------------+
+| 06bc817f9b8647d3bb795c6a1107cff3 |    KeystoneAdmin     |
+| 1e77a4036d42446aabcfc706759b732d | KeystoneServiceAdmin |
+| 25fcba9f9b9a4982a77f70fd2c84fc31 |        admin         |
+| 28941e6016ea488cad9e5e55fee7d8aa |        Member        |
++----------------------------------+----------------------+
+
+keystone tenant-list
++----------------------------------+---------+---------+
+|                id                |   name  | enabled |
++----------------------------------+---------+---------+
+| 15eafea37ce24b42ab60b1fe0f882d98 | service |   true  |
+| 18e181671f174cc1bce64e4370eea96a |  admin  |   true  |
++----------------------------------+---------+---------+
+
+keystone user-list
++----------------------------------+------------+---------+-------+
+|                id                |    name    | enabled | email |
++----------------------------------+------------+---------+-------+
+| 4be33d2e90ad42ce867954b07aa7b908 |   admin    |   true  |       |
+| 8c53cdc1f4354e77a8e2abd39728b20d |    nova    |   true  |       |
+| bd9e78ff6ca84c7181f3f412a01597ed | monitoring |   true  |       |
+| f6b72f21414246d0a924fc883e694f45 |   glance   |   true  |       |
++----------------------------------+------------+---------+-------+
+
+keystone user-role-list
++----------------------------------+----------------------+----------------------------------+----------------------------------+
+|                id                |         name         |             user_id              |            tenant_id             |
++----------------------------------+----------------------+----------------------------------+----------------------------------+
+| 06bc817f9b8647d3bb795c6a1107cff3 |    KeystoneAdmin     | 4be33d2e90ad42ce867954b07aa7b908 | 18e181671f174cc1bce64e4370eea96a |
+| 1e77a4036d42446aabcfc706759b732d | KeystoneServiceAdmin | 4be33d2e90ad42ce867954b07aa7b908 | 18e181671f174cc1bce64e4370eea96a |
+| 25fcba9f9b9a4982a77f70fd2c84fc31 |        admin         | 4be33d2e90ad42ce867954b07aa7b908 | 18e181671f174cc1bce64e4370eea96a |
++----------------------------------+----------------------+----------------------------------+----------------------------------+
+</pre>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/15/keystone-user-role-list-bug/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -200,6 +287,10 @@ root@controller:~# nova --no_cache volume-list
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/12/new-rrrors-on-fresh-openstack-installations-mysql-and-keystone/">New Errors on Fresh Openstack Installations: MySQL and KeyStone</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/02/07/ono-netgear-router-losing-ssh-conections/">ONO Netgear Router: Losing SSH conections</a>
       </li>
     
@@ -213,10 +304,6 @@ root@controller:~# nova --no_cache volume-list
     
       <li class="post">
         <a href="/blog/2013/01/29/installing-a-private-chef-server-via-knife-server/">Installing a Private Chef Server via knife-server</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/28/openstack-installation-librarian-and-spiceweasel-part-i-hosted-chef/">Openstack Installation - librarian and spiceweasel  Part I - Hosted Chef</a>
       </li>
     
   </ul>

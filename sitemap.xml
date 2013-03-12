@@ -67,11 +67,17 @@
         <lastmod>2013-02-07T11:22:11+01:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://pedrojimenez.github.com/blog/2013/03/12/new-rrrors-on-fresh-openstack-installations-mysql-and-keystone/
+        </loc>
+        <lastmod>2013-03-12T12:16:31+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://pedrojimenez.github.com/</loc>
-        <lastmod>2013-02-07T11:22:11+01:00</lastmod>
+        <lastmod>2013-03-12T12:16:31+01:00</lastmod>
     </url>
     <url>
         <loc>http://pedrojimenez.github.com/blog/archives/</loc>
-        <lastmod>2013-02-07T11:22:11+01:00</lastmod>
+        <lastmod>2013-03-12T12:16:31+01:00</lastmod>
     </url>
 </urlset>

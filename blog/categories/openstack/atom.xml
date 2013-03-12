@@ -4,7 +4,7 @@
   <title><![CDATA[Category: openstack | Pedro Jiménez's Blog]]></title>
   <link href="http://pedrojimenez.github.com/blog/categories/openstack/atom.xml" rel="self"/>
   <link href="http://pedrojimenez.github.com/"/>
-  <updated>2013-02-07T11:22:19+01:00</updated>
+  <updated>2013-03-12T12:16:41+01:00</updated>
   <id>http://pedrojimenez.github.com/</id>
   <author>
     <name><![CDATA[Pedro Jiménez Solís]]></name>
@@ -12,6 +12,195 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[New Errors on Fresh Openstack Installations: MySQL and KeyStone]]></title>
+    <link href="http://pedrojimenez.github.com/blog/2013/03/12/new-rrrors-on-fresh-openstack-installations-mysql-and-keystone/"/>
+    <updated>2013-03-12T10:55:00+01:00</updated>
+    <id>http://pedrojimenez.github.com/blog/2013/03/12/new-rrrors-on-fresh-openstack-installations-mysql-and-keystone</id>
+    <content type="html"><![CDATA[<center>
+<img align=center
+src="https://a248.e.akamai.net/camo.github.com/160d8ec179f975175efe17a3225dfd557772c1b2/687474703a2f2f7465726d2e69652f646174612f6d656469756d5f6b736c2e706e67">
+</center>
+
+
+
+
+<h2>Problemática con Keystone</h2>
+
+
+<p>Al desplegar un nodo de Controller via Chef nos hemos encontrado con varios problemas. Para empezar, voy a datar la fecha del error. Ayer 11 de Marzo finalicé de actualizar todos los nodos a desplegar, renicié incluso las máquinas y me dispuse a seguir haciendo pruebas de despliegue con los cookbooks actualizados. Pero ... empezaron los errores. Por una parte, al hacer pruebas con Quantum necesitaba ver la lista de los tenants y al hacer un listado con "keystone" me dio un error de versionado.</p>
+
+<pre>
+$ keystone
+Traceback (most recent call last):
+  File "/usr/bin/keystone", line 5, in <module>
+    from pkg_resources import load_entry_point
+  File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 2807, in <module>
+    parse_requirements(__requires__), Environment()
+  File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 594, in resolve
+    raise DistributionNotFound(req)
+pkg_resources.DistributionNotFound: requests>=0.8.8,<1.0
+</pre>
+
+
+
+
+<!-- more -->
+
+
+<p>Existe un error documentado al respecto, pero su solución es simple ==> pon la versión del repositorio de Grizzly, que funciona. <a href="https://bugs.launchpad.net/ubuntu/+source/python-keystoneclient/+bug/1122146">https://bugs.launchpad.net/ubuntu/+source/python-keystoneclient/+bug/1122146</a>
+Bueno pues después de instalar la paquetería del repositorio del Grizzly, siguió sin funcionarme el <strong>Keystone</strong> así que tuve que buscar alternativas. Volví un paso atrás y quité la paquetería novedosa para volver a la del repositorio oficial de Folsom.</p>
+
+<p>Se ha conseguido modificar al propio <code>Keystone</code> para que las dependencias que solicita, las resuelva a nuestro favor. Viendo el código de Keystone vemos que pide la versión 0.22 del paquete <strong>python-keystoneclient</strong> que no se encuentra actualmente en <strong>Folsom</strong>.</p>
+
+<pre>
+root@controller:~# dpkg -l | grep keystone
+ii  keystone                         2012.2.1-0ubuntu1.2~cloud0                          OpenStack identity service - Daemons
+ii  python-keystone                  2012.2.1-0ubuntu1.2~cloud0                          OpenStack identity service - Python library
+ii  python-keystoneclient            1:0.1.3-0ubuntu1.1~cloud0                           Client libary for Openstack Keystone API
+</pre>
+
+
+<p>Así que cambiaremos el codigo del archivo <code>/usr/bin/keystone</code>:</p>
+
+<pre>
+#!/usr/bin/python
+# EASY-INSTALL-ENTRY-SCRIPT: 'python-keystoneclient==0.1.3','console_scripts','keystone'
+__requires__ = 'python-keystoneclient==0.2.2'
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('python-keystoneclient==0.2.2', 'console_scripts', 'keystone')()
+    )
+
+por:
+
+#!/usr/bin/python
+# EASY-INSTALL-ENTRY-SCRIPT: 'python-keystoneclient==0.1.3','console_scripts','keystone'
+__requires__ = 'python-keystoneclient==0.1.3'
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('python-keystoneclient==0.1.3', 'console_scripts', 'keystone')()
+    )
+</pre>
+
+
+<p>A partir de ese momento ya es posible utilizar <strong>keystone</strong> de manera habitual.</p>
+
+<pre>
+root@controller:~# keystone tenant-list
++----------------------------------+---------+---------+
+|                id                |   name  | enabled |
++----------------------------------+---------+---------+
+| 3ef73e7a7ec84f02bec118bfb5644d67 | service |   true  |
+| 45d2324cb25b4b38bbda09dffb027662 |  admin  |   true  |
++----------------------------------+---------+---------+
+</pre>
+
+
+
+
+<center>
+<img align=center
+src="http://www.how2assist.com/wp-content/uploads/2010/10/mysql.png">
+</center>
+
+
+
+
+<h2>Problemática con MySQL</h2>
+
+
+<p>Bien, el otro problema que nos hemos encontrado es que hemos actualizado los clientes de MySQL y de repente <strong>TODOS</strong> los servicios de la plataforma han comenzado a perder el acceso a la Base de Datos. En nuestra instalación se ha configurado a MySQL para que permita el acceso remoto al usuario <code>root</code> y al hacer las comprobaciones desde cada uno de los nodos externos al Controller (Network, Storage y Cómputos) ha comenzado a rechazar las conexiones.</p>
+
+<p>Después de mucho investigar se ha tenido que realizar un <strong>RollBack</strong> hacia la versión anterior de MySQL, tanto del cliente como del Servidor en el nodo de controller. Para poder instalar una versión anterior hemos tenido que usar <strong>madison</strong> y seleccionar la anterior versión que teníamos en el nodo de Controller.</p>
+
+<pre>
+root@controller:/etc/apparmor.d# apt-cache madison mysql-server-5.5
+mysql-server-5.5 | 5.5.29-0ubuntu0.12.04.2 | http://es.archive.ubuntu.com/ubuntu/ precise-updates/main amd64 Packages
+mysql-server-5.5 | 5.5.29-0ubuntu0.12.04.1 | http://security.ubuntu.com/ubuntu/ precise-security/main amd64 Packages
+mysql-server-5.5 | 5.5.22-0ubuntu1 | http://es.archive.ubuntu.com/ubuntu/ precise/main amd64 Packages
+ mysql-5.5 | 5.5.22-0ubuntu1 | http://es.archive.ubuntu.com/ubuntu/ precise/main Sources
+ mysql-5.5 | 5.5.29-0ubuntu0.12.04.2 | http://es.archive.ubuntu.com/ubuntu/ precise-updates/main Sources
+ mysql-5.5 | 5.5.29-0ubuntu0.12.04.1 | http://security.ubuntu.com/ubuntu/ precise-security/main Sources
+</pre>
+
+
+<p>Ahora procedemos a la instalación de la paquetería con la versión que hemos seleccionado:</p>
+
+<pre>
+apt-get install --reinstall mysql-server-5.5=5.5.22-0ubuntu1 mysql-server-core-5.5=5.5.22-0ubuntu1 mysql-client-5.5=5.5.22-0ubuntu1 mysql-client-core-5.5=5.5.22-0ubuntu1 libmysqlclient18=5.5.22-0ubuntu1 mysql-common=5.5.22-0ubuntu1
+</pre>
+
+
+
+
+<h3>Error al generar el fichero de INITCTL de MySQL</h3>
+
+
+<blockquote></blockquote>
+
+<p>Cuando parecía que deberíamos tener ya acceso a levantar el servicio de Base de Datos, nos encontramos con el siguiente error al arrancar:</p>
+
+<pre>
+start: Job failed to start
+</pre>
+
+
+<p>Ha hecho falta copiar de manera manual el archivo <code>/etc/init/mysql.conf</code> para que el servicio pueda arrancar. Pego el contenido por si fuera de utilidad:</p>
+
+<pre>
+# MySQL Service
+
+description     "MySQL Server"
+author          "Mario Limonciello <superm1@ubuntu.com>"
+
+start on (net-device-up
+          and local-filesystems
+      and runlevel [2345])
+stop on runlevel [016]
+
+respawn
+
+env HOME=/etc/mysql
+umask 007
+
+pre-start script
+    #Sanity checks
+    [ -r $HOME/my.cnf ]
+    [ -d /var/run/mysqld ] || install -m 755 -o mysql -g root -d /var/run/mysqld
+    # Load AppArmor profile
+    if aa-status --enabled 2>/dev/null; then
+        apparmor_parser -r /etc/apparmor.d/usr.sbin.mysqld || true
+    fi
+    LC_ALL=C BLOCKSIZE= df --portability /var/lib/mysql/. | tail -n 1 | awk '{ exit ($4<4096) }'
+end script
+
+exec /usr/sbin/mysqld
+
+post-start script
+    for i in `seq 1 30` ; do
+        /usr/bin/mysqladmin --defaults-file="${HOME}"/debian.cnf ping && {
+            exec "${HOME}"/debian-start
+            # should not reach this line
+            exit 2
+        }
+        sleep 1
+    done
+    exit 1
+end script
+</pre>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Appendix: Chef-client log configuration after Bootstrap]]></title>
@@ -779,130 +968,6 @@ la sintaxis:</p></blockquote>
   version: 1.2.0
 </pre>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Ubuntu python-keystoneclient Dependency Error]]></title>
-    <link href="http://pedrojimenez.github.com/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error/"/>
-    <updated>2012-12-12T12:59:00+01:00</updated>
-    <id>http://pedrojimenez.github.com/blog/2012/12/12/ubuntu-python-keystoneclient-dependency-error</id>
-    <content type="html"><![CDATA[<p>Después de tener la infraestructura completa y funcional, nos encontramos ayer con un extraño error que no nos permitía el uso de Glance para poder hacer un "upload" de las imágenes. Nos encontramos con un error de dependencias en uno de los paquetes necesarios en la invocación de Glance.</p>
-
-<p>Buscando algo más de información vemos que con la paquetería actual se llega a un error de versionado en el paquete <strong>python-keystoneclient</strong> y no permite que glance se ejecute.</p>
-
-<pre>
-root@controller:~# glance index
-Traceback (most recent call last):
-File "/usr/bin/glance", line 5, in <module>
-from pkg_resources import load_entry_point
-File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 2711, in <module>
-parse_requirements(__requires__), Environment()
- File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 584, in resolve
-raise DistributionNotFound(req)
-pkg_resources.DistributionNotFound: python-keystoneclient>=0.1.2,<0.2
-          
-root@controller:~# glance image-list
-Traceback (most recent call last):
-File "/usr/bin/glance", line 5, in <module>
-from pkg_resources import load_entry_point
-File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 2711, in <module>
-parse_requirements(__requires__), Environment()
-File "/usr/lib/python2.7/dist-packages/pkg_resources.py", line 584, in resolve
-raise DistributionNotFound(req)
-pkg_resources.DistributionNotFound: python-keystoneclient>=0.1.2,<0.2
-</pre>
-
-
-
-
-<!-- more -->
-
-
-<blockquote><p>AYUDA: Contactamos con nuestro Mcgyver personal, Gracias @achilued por la ayuda para ver la luz :)</p></blockquote>
-
-<br />
-
-
-<p>Lo primero vamos a comprobar con qué versión de paquetería contamos, tanto de los paquetes principales como de los auxiliares.</p>
-
-<pre>
-root@controller:~# dpkg -l | egrep 'nova|glance|python-keystone'
-ii  glance                           2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - Daemons
-ii  glance-api                       2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - API
-ii  glance-common                    2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - Common
-ii  glance-registry                  2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - Registry
-ii  nova-api-ec2                     2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - EC2 API frontend
-rc  nova-api-metadata                2012.2+git201210091907~precise-0ubuntu1              OpenStack Compute - metadata API frontend
-ii  nova-api-os-compute              2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - OpenStack Compute API frontend
-rc  nova-api-os-volume               2012.2+git201210091907~precise-0ubuntu1              OpenStack Compute - OpenStack Volume API frontend
-ii  nova-cert                        2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - certificate management
-ii  nova-common                      2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - common files
-ii  nova-consoleauth                 2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - Console Authenticator
-ii  nova-novncproxy                  2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - NoVNC proxy
-ii  nova-scheduler                   2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute - virtual machine scheduler
-rc  nova-volume                      2012.2+git201210091907~precise-0ubuntu1              OpenStack Compute - storage
-ii  python-glance                    2012.2.2+git201211300731~precise-0ubuntu1            OpenStack Image Registry and Delivery Service - Python library
-ii  python-glanceclient              1:0.5.1.8.cdc06d9+git201210051430~precise-0ubuntu1   Client library for Openstack glance server.
-ii  python-keystone                  2012.2.2+git201212061213~precise-0ubuntu1            OpenStack identity service - Python library
-ii  python-keystoneclient            1:0.2.0.1.ge4ed1f3+git201211221523~precise-0ubuntu1  Client library for OpenStack Identity API
-ii  python-nova                      2012.2.2+git201212111304~precise-0ubuntu1            OpenStack Compute Python libraries
-ii  python-novaclient                1:2.9.0.49.gdc6285c+git201211221531~precise-0ubuntu1 client library for OpenStack Compute API
-</pre>
-
-
-<p>Vemos un apunte clarísimo y es que la versión del paquete <em>python-keystoneclient</em> es efectivamente superior a 0.2 , más concretamente se encuentra instalada la vesión <strong>0.2.0.1</strong> que al no cumplir con las exigencias del paquete Glance nos expulsa de su ejecución. Vamos a tirar un poco del hilo para ver si podemos arreglar este entuerto.</p>
-
-<p>PASO 1: Se buscan las dependencias que tiene Glance y encontramos el directorio donde se aloja el cliente.
-```
-$ root@controller:~# cat /usr/bin/glance</p>
-
-<h1>!/usr/bin/python</h1>
-
-<h1>EASY-INSTALL-ENTRY-SCRIPT: 'python-glanceclient==0.5.1.8.cdc06d9','console_scripts','glance'</h1>
-
-<p><strong>requires</strong> = 'python-glanceclient==0.5.1.8.cdc06d9'
-import sys
-from pkg_resources import load_entry_point</p>
-
-<p>if <strong>name</strong> == '<strong>main</strong>':</p>
-
-<pre><code>sys.exit(
-        load_entry_point('python-glanceclient==0.5.1.8.cdc06d9', 'console_scripts', 'glance')()
-        )
-</code></pre>
-
-<p>```</p>
-
-<p>PASO2: Dentro de dicho directorio editamos el fichero con las dependecias y se elimina la superior del paquete <strong>python-keystoneclient</strong>.</p>
-
-<pre>
-RUTA: /usr/lib/python2.7/dist-packages/python_glanceclient-0.5.1.8.cdc06d9.egg-info/requires.txt 
-
-CAMBIAMOS:
-prettytable>=0.6,<0.7
-python-keystoneclient>=0.1.2,<0.2
-warlock<2
-
-POR:
-prettytable>=0.6,<0.7
-python-keystoneclient>=0.1.2
-warlock<2
-</pre>
-
-
-<p>PASO3: Comprobamos que Glance vuelve a operar con normalidad.
-```
-$ glance index
-ID                                   Name                           Disk Format          Container Format     Size</p>
-
-<hr />
-
-<p>de4bdf11-5b5e-4ca7-a29c-2c38ebe07697 cirros-image                   qcow2                bare                        9761280
-```</p>
-
-<p>Más información:
-<a href="https://bugs.launchpad.net/openstack-manuals/+bug/1064449">https://bugs.launchpad.net/openstack-manuals/+bug/1064449</a></p>
 ]]></content>
   </entry>
   
